@@ -1,10 +1,11 @@
 # Discord Bot for Custom Street
+[![CircleCI](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main.svg?style=shield)](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main)
 ## Table of Contents
 * [Functions](#functions)
 * [Supported Commands](#supported-commands)
   * [Address Conversion](#address-conversion)
   * [Value Conversion](#value-conversion)
-  * [Text Translation Powered by DeepL)](#text-translation-powered-by-deepl)
+  * [Text Translation (Powered by DeepL)](#text-translation-powered-by-deepl)
   * [Venture Cards](#venture-cards)
   * [URLs](#urls)
 * [Running this Bot in Another Environment](#running-this-bot-in-another-environment)
