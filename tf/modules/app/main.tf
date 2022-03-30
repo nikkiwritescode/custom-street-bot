@@ -43,8 +43,8 @@ module "custom_street_bot_ecs" {
       target_group_arn            = ""
 
       # ECR Repo Settings
-      ecr_repo_arn = var.ecr_image_arn
-      ecr_repo_uri = var.ecr_image_uri
+      ecr_repo_arn = var.ecr_repo_arn
+      ecr_repo_uri = var.ecr_repo_uri
 
       # Container-level Settings
       container_cpu_units    = 0   # 0 in the container_cpu spot means managed by Fargate,
