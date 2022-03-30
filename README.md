@@ -26,17 +26,21 @@
 * `fsv2bsv` - Converts a Fortune Street Virtual Address to Boom Street.
 * `bsv2bsf` - Converts a Boom Street Virtual Address to Boom Street File Offset.
 * `fsv2fsf` - Converts a Fortune Street Virtual Address to Fortune Street File Offset.
+
 ### Value Conversion
 * `hex2int` - Converts a hexadecimal value to a decimal, or integer, value
 * `hex2float` - Converts a hexadecimal value to a floating-point value
 * `int2hex` - Converts a decimal, or integer, value to hexadecimal
 * `float2hex` - Converts a floating-point value to hexadecimal.
+
 ### Text Translation (Powered by DeepL)
 * `en` - Translates text of any language to English.
 * `jp` - Translates text of any language to Japanese.
+
 ### Venture Cards
 * `card` - Displays a random Venture Card from Fortune Street Wii with both English and Japanese text.
 * `card <number>` - Displays a specific Venture Card from Fortune Street Wii with both English and Japanese text. Accepts numbers 1 through 128.
+
 ### URLs
 * `calc` - Displays the Address Calculator URL.
 * `contribute` - Displays a link to this GitHub repo.
@@ -58,6 +62,4 @@ Currently, it is not simple to run this bot elsewhere. This is because I use my 
 * `DEEPL_AUTH_KEY` -- The token used to interact with the DeepL service
 
 ## Contributing
-Do you have ideas for bug fixes or new features? Fantastic! If you'd like to contribute to this bot, feel free to clone the repo and perform your work locally, then open a Pull Request with your changes! I will be more than glad to review your work, request changes, and even merge it in if your new functionality works well. 
-
-Super minor readme change!
+Do you have ideas for bug fixes or new features? Fantastic! If you'd like to contribute to this bot, feel free to clone the repo and perform your work locally, then open a Pull Request with your changes! I will be more than glad to review your work, request changes, and even merge it in if your new functionality works well.
