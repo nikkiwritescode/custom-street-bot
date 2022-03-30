@@ -1,7 +1,7 @@
 from discord.ext import commands
 import random
 
-from lib.card_embed import CardEmbed
+from utils.card_embed import CardEmbed
 
 
 class VentureCards(commands.Cog):

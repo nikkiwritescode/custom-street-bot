@@ -1,4 +1,4 @@
-from lib.address_section_mapper import AddressSectionMapper
+from utils.address_section_mapper import AddressSectionMapper
 from discord.ext import commands
 
 
