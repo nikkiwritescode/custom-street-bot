@@ -1,0 +1,189 @@
+version: 2.1
+
+orbs:
+  terraform: circleci/terraform@3.0.1
+
+commands:
+  terraform-deploy:
+    description: Apply a Terraform configuration via Terraform Cloud
+    parameters:
+      path:
+        type: string
+      app_version:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Create .terraformrc file locally
+          command: >-
+            echo "credentials \"app.terraform.io\" {token =
+            \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
+      - run:
+          name: Create app-version.auto.tfvars
+          command: |
+            echo "app_version = \"<< parameters.app_version >>\"" > << parameters.path >>/app-version.auto.tfvars
+      - terraform/validate:
+          path: << parameters.path >>
+      - terraform/init:
+          path: << parameters.path >>
+      - terraform/apply:
+          path: << parameters.path >>
+jobs:
+  build-amd64:
+    docker:
+      - image: cimg/base:stable
+    environment:
+      DOCKER_BUILDKIT: 1
+    parameters:
+      ecr_repo_uri:
+        type: string
+      custom_street_bot_repo:
+        type: string
+    steps:
+      - setup_remote_docker:
+          version: 20.10.11
+      - run:
+          name: Add github.com to known hosts...
+          command: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts && ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Cloning repository recursively...
+          command: git clone <<parameters.custom_street_bot_repo>> --recursive
+      - run:
+          name: Installing AWS CLI V2...
+          command: |
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install
+      - run:
+          name: Setting up the AWS CLI Profile...
+          command: |
+              aws configure set profile.circleci.region us-east-2
+              aws configure set profile.circleci.role_arn $ASSUME_ROLE_ARN
+              aws configure set profile.circleci.external_id $ASSUME_ROLE_EXTERNAL_ID
+              aws configure set profile.circleci.role_session_name circlecideployrole
+              aws configure set profile.circleci.credential_source Environment
+      - run:
+          name: Building image and pushing to ECR...
+          command: |
+              cd custom-street-bot
+              aws ecr get-login-password --region us-east-2 --profile circleci | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
+              docker build . --ssh default -t custom-street-bot-amd64:$CIRCLE_SHA1
+              docker tag custom-street-bot-amd64:$CIRCLE_SHA1 <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-amd64
+              docker push <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-amd64
+      - run:
+          name: Finished!
+          command: echo "The amd64 image has been successfully built and pushed to ECR!"
+  build-arm64:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
+    environment:
+      DOCKER_BUILDKIT: 1
+    parameters:
+      ecr_repo_uri:
+        type: string
+      custom_street_bot_repo:
+        type: string
+    steps:
+      - run:
+          name: Add github.com to known hosts...
+          command: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts && ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Cloning repository recursively...
+          command: git clone <<parameters.custom_street_bot_repo>> --recursive
+      - run:
+          name: Installing AWS CLI V2...
+          command: |
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install --update
+      - run:
+          name: Setting up the AWS CLI Profile...
+          command: |
+              aws configure set profile.circleci.region us-east-2
+              aws configure set profile.circleci.role_arn $ASSUME_ROLE_ARN
+              aws configure set profile.circleci.external_id $ASSUME_ROLE_EXTERNAL_ID
+              aws configure set profile.circleci.role_session_name circlecideployrole
+              aws configure set profile.circleci.credential_source Environment
+      - run:
+          name: Building image and pushing to ECR...
+          command: |
+              cd custom-street-bot
+              aws ecr get-login-password --region us-east-2 --profile circleci | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
+              docker build . --ssh default -t custom-street-bot-arm64:$CIRCLE_SHA1
+              docker tag custom-street-bot-arm64:$CIRCLE_SHA1 <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-arm64
+              docker push <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-arm64
+      - run:
+          name: Finished!
+          command: echo "The arm64 image has been successfully built and pushed to ECR!"
+  create-multiarch-image:
+    docker:
+      - image: cimg/base:stable
+    parameters:
+      ecr_repo_uri:
+        type: string
+    steps:
+      - setup_remote_docker:
+          version: 20.10.11
+      - run:
+          name: Installing AWS CLI V2...
+          command: |
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install
+      - run:
+          name: Setting up the AWS CLI Profile...
+          command: |
+              aws configure set profile.circleci.region us-east-2
+              aws configure set profile.circleci.role_arn $ASSUME_ROLE_ARN
+              aws configure set profile.circleci.external_id $ASSUME_ROLE_EXTERNAL_ID
+              aws configure set profile.circleci.role_session_name circlecideployrole
+              aws configure set profile.circleci.credential_source Environment
+      - run:
+          name: Creating multiarch manifest...
+          command: |
+            aws ecr get-login-password --region us-east-2 --profile circleci | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
+            docker manifest create <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-multiarch \
+            --amend <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-amd64 \
+            --amend <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-arm64
+            docker manifest push <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-multiarch
+  deploy-custom-street-bot:
+    executor: terraform/default
+    steps:
+      - terraform-deploy:
+          path: ./tf/environments/production/app
+          app_version: $CIRCLE_SHA1-multiarch
+workflows:
+  version: 2
+  build-and-push-to-ECR:
+    jobs:
+      - build-amd64:
+          context: aws-global
+          ecr_repo_uri: $AWS_ECR_REPO
+          custom_street_bot_repo: $CUSTOM_STREET_BOT_REPO
+          filters:
+            branches:
+              only: main
+      - build-arm64:
+          context: aws-global
+          ecr_repo_uri: $AWS_ECR_REPO
+          custom_street_bot_repo: $CUSTOM_STREET_BOT_REPO
+          filters:
+            branches:
+              only: main
+      - create-multiarch-image:
+          context: aws-global
+          ecr_repo_uri: $AWS_ECR_REPO
+          requires:
+            - build-amd64
+            - build-arm64
+          filters:
+            branches:
+              only: main
+      - deploy-custom-street-bot:
+          context: terraform-global
+          requires:
+            - create-multiarch-image
+          filters:
+            branches:
+              only: main
