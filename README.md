@@ -58,3 +58,5 @@ Currently, it is not simple to run this bot elsewhere. This is because I use my 
 
 ## Contributing
 Do you have ideas for bug fixes or new features? Fantastic! If you'd like to contribute to this bot, feel free to clone the repo and perform your work locally, then open a Pull Request with your changes! I will be more than glad to review your work, request changes, and even merge it in if your new functionality works well. 
+
+Super minor readme change!
