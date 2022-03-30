@@ -35,8 +35,8 @@ module "custom_street_bot" {
   log_group_arn        = data.terraform_remote_state.foundation.outputs.log_group_arn
   kms_key_arn          = local.kms_key_arn
 
-  ecr_image_arn = "arn:aws:ecr:us-east-2:632957227412:repository/custom-street-bot"
-  ecr_image_uri = "632957227412.dkr.ecr.us-east-2.amazonaws.com/custom-street-bot"
+  ecr_repo_arn = "arn:aws:ecr:us-east-2:632957227412:repository/custom-street-bot"
+  ecr_repo_uri = "632957227412.dkr.ecr.us-east-2.amazonaws.com/custom-street-bot"
 
   secrets_config = {
     bot-secrets = {

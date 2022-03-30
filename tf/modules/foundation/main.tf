@@ -33,5 +33,5 @@ module "bot_secrets" {
   environment      = var.environment
   kms_key_id       = var.kms_key_id
   region           = "us-east-2"
-  secrets          = ["discord_bot_secrets"]
+  secrets          = ["bot_secrets"]
 }
