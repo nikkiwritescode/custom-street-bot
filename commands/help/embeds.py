@@ -7,24 +7,28 @@ prefix = bot.command_prefix
 
 # Command Aliases
 
-address_converter_aliases= [
-    f"`{prefix}bsv2fsv` => `ConvertBSVirtualAddressToFSVirtualAddress`, `bsvtofsv` \n",
-    f"`{prefix}fsv2bsv` => `ConvertFSVirtualAddressToBSVirtualAddress`, `fsvtobsv` \n",
-    f"`{prefix}bsv2bsf` => `ConvertBSVirtualAddressToBSFileOffset`, `bsvtobsf` \n",
-    f"`{prefix}fsv2fsf` => `ConvertFSVirtualAddressToFSFileOffset`, `fsvtofsf` \n",
+address_converter_aliases = [
+    f"`{prefix}bsv2fsv` => "
+    "`ConvertBSVirtualAddressToFSVirtualAddress`, `bsvtofsv` \n",
+    f"`{prefix}fsv2bsv` => "
+    "`ConvertFSVirtualAddressToBSVirtualAddress`, `fsvtobsv` \n",
+    f"`{prefix}bsv2bsf` => "
+    "`ConvertBSVirtualAddressToBSFileOffset`, `bsvtobsf` \n",
+    f"`{prefix}fsv2fsf` => "
+    "`ConvertFSVirtualAddressToFSFileOffset`, `fsvtofsf` \n",
 ]
-card_aliases= [
+card_aliases = [
     f"`{prefix}card` => `chancecard`, `pull_card`, `venture` \n",
 ]
-help_aliases= [
+help_aliases = [
     f"`{prefix}aliases` => `alias`, `alt` \n",
     f"`{prefix}help` => `commands` \n",
 ]
-text_translation_aliases= [
+text_translation_aliases = [
     f"`{prefix}en` => `english`.\n",
     f"`{prefix}jp` => `japanese`\n",
 ]
-value_converter_aliases= [
+value_converter_aliases = [
     f"`{prefix}hex2int` => `hextoint`.\n",
     f"`{prefix}hex2float` => `hextofloat`\n",
     f"`{prefix}int2hex` => `inttohex`\n",
