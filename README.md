@@ -50,6 +50,10 @@
 * `wiki` - Displays the Fortune Street Modding Wiki URL.
 * `youtube` - Displays the Custom Street YouTube Account URL.
 
+### Help
+* `aliases` - Displays alternate triggers for bot commands.
+* `help` - Displays help panel.
+
 ## Running this Bot in Another Environment
 Currently, it is not simple to run this bot elsewhere. This is because I use my own private Terraform modules to power the infrastructure behind it in AWS. Therefore, if you do decide to attempt to do so, you will be on your own when it comes to hosting it. However, the Dockerfile should build just about anywhere, so the knowledge you will need to run it largely pertains to running containerized applications in Docker. You will also need the following external accounts or services:
 

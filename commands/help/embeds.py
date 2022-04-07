@@ -13,28 +13,23 @@ address_converter_aliases= [
     f"`{prefix}bsv2bsf` => `ConvertBSVirtualAddressToBSFileOffset`, `bsvtobsf` \n",
     f"`{prefix}fsv2fsf` => `ConvertFSVirtualAddressToFSFileOffset`, `fsvtofsf` \n",
 ]
-
 card_aliases= [
     f"`{prefix}card` => `chancecard`, `pull_card`, `venture` \n",
 ]
-
 help_aliases= [
     f"`{prefix}aliases` => `alias`, `alt` \n",
     f"`{prefix}help` => `commands` \n",
 ]
-
 text_translation_aliases= [
     f"`{prefix}en` => `english`.\n",
     f"`{prefix}jp` => `japanese`\n",
 ]
-
 value_converter_aliases= [
     f"`{prefix}hex2int` => `hextoint`.\n",
     f"`{prefix}hex2float` => `hextofloat`\n",
     f"`{prefix}int2hex` => `inttohex`\n",
     f"`{prefix}float2hex` => `floattohex`.",
 ]
-
 url_aliases = [
     f"`{prefix}calc` => `calculator`\n",
     f"`{prefix}github` => `git`, `repo`\n",
@@ -52,8 +47,8 @@ commands_address_converters_help = [
     f"`{prefix}fsv2fsf` FS Virtual Address to File Offset.\n",
 ]
 commands_help_help = [
-    f"`{prefix}aliases` Show alternate triggers for bot commands.\n",
-    f"`{prefix}help` Show this panel.\n",
+    f"`{prefix}aliases` Display alternate triggers for bot commands.\n",
+    f"`{prefix}help` Display this panel.\n",
 ]
 commands_text_translation_help = [
     f"`{prefix}en` Convert text to English.\n",
@@ -74,7 +69,6 @@ commands_value_converters_help = [
     f"`{prefix}int2hex` Convert Decimal to Hex.\n",
     f"`{prefix}float2hex` Convert Float to Hex.",
 ]
-
 commands_venture_cards_help = [
     f"`{prefix}card` Pull a random Venture Card.\n",
     f"`{prefix}card <number>` Pull a specific Venture Card.\n",
@@ -159,7 +153,7 @@ class DisplayHelp(commands.Cog):
             inline=False
         )
         embed.add_field(
-            name="Help Commands",
+            name="Help",
             value="".join(commands_help_help),
             inline=False
         )
