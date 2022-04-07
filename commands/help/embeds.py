@@ -5,11 +5,55 @@ from app import bot
 
 prefix = bot.command_prefix
 
+# Command Aliases
+
+address_converter_aliases= [
+    f"`{prefix}bsv2fsv` => `ConvertBSVirtualAddressToFSVirtualAddress`, `bsvtofsv` \n",
+    f"`{prefix}fsv2bsv` => `ConvertFSVirtualAddressToBSVirtualAddress`, `fsvtobsv` \n",
+    f"`{prefix}bsv2bsf` => `ConvertBSVirtualAddressToBSFileOffset`, `bsvtobsf` \n",
+    f"`{prefix}fsv2fsf` => `ConvertFSVirtualAddressToFSFileOffset`, `fsvtofsf` \n",
+]
+
+card_aliases= [
+    f"`{prefix}card` => `chancecard`, `pull_card`, `venture` \n",
+]
+
+help_aliases= [
+    f"`{prefix}aliases` => `alias`, `alt` \n",
+    f"`{prefix}help` => `commands` \n",
+]
+
+text_translation_aliases= [
+    f"`{prefix}en` => `english`.\n",
+    f"`{prefix}jp` => `japanese`\n",
+]
+
+value_converter_aliases= [
+    f"`{prefix}hex2int` => `hextoint`.\n",
+    f"`{prefix}hex2float` => `hextofloat`\n",
+    f"`{prefix}int2hex` => `inttohex`\n",
+    f"`{prefix}float2hex` => `floattohex`.",
+]
+
+url_aliases = [
+    f"`{prefix}calc` => `calculator`\n",
+    f"`{prefix}github` => `git`, `repo`\n",
+    f"`{prefix}invite` => `discord`, `invitation`, `serverlink`\n",
+    f"`{prefix}twitch` => `ttv`\n",
+    f"`{prefix}youtube` => `channel`, `tube`, `yt`\n",
+]
+
+# Command Help
+
 commands_address_converters_help = [
     f"`{prefix}bsv2fsv` Boom Street Virtual Address to FS.\n",
     f"`{prefix}fsv2bsv` Fortune Street Virtual Address to BS.\n",
     f"`{prefix}bsv2bsf` BS Virtual Address to File Offset.\n",
     f"`{prefix}fsv2fsf` FS Virtual Address to File Offset.\n",
+]
+commands_help_help = [
+    f"`{prefix}aliases` Show alternate triggers for bot commands.\n",
+    f"`{prefix}help` Show this panel.\n",
 ]
 commands_text_translation_help = [
     f"`{prefix}en` Convert text to English.\n",
@@ -30,6 +74,7 @@ commands_value_converters_help = [
     f"`{prefix}int2hex` Convert Decimal to Hex.\n",
     f"`{prefix}float2hex` Convert Float to Hex.",
 ]
+
 commands_venture_cards_help = [
     f"`{prefix}card` Pull a random Venture Card.\n",
     f"`{prefix}card <number>` Pull a specific Venture Card.\n",
@@ -111,6 +156,49 @@ class DisplayHelp(commands.Cog):
         embed.add_field(
             name="URLs",
             value="".join(commands_urls_help),
+            inline=False
+        )
+        embed.add_field(
+            name="Help Commands",
+            value="".join(commands_help_help),
+            inline=False
+        )
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=['alias', 'alt'])
+    async def aliases(self, ctx):
+        embed = discord.Embed(
+            title="Aliases for Available Commands",
+            color=0x000000
+        )
+        embed.add_field(
+            name="Address Converters",
+            value="".join(address_converter_aliases),
+            inline=False,
+        )
+        embed.add_field(
+            name="Value Converters",
+            value="".join(value_converter_aliases),
+            inline=False,
+        )
+        embed.add_field(
+            name="Text Translation (powered by DeepL)",
+            value="".join(text_translation_aliases),
+            inline=False,
+        )
+        embed.add_field(
+            name="Venture Cards",
+            value="".join(card_aliases),
+            inline=False
+        )
+        embed.add_field(
+            name="URLs",
+            value="".join(url_aliases),
+            inline=False
+        )
+        embed.add_field(
+            name="Help Commands",
+            value="".join(help_aliases),
             inline=False
         )
         await ctx.send(embed=embed)

@@ -190,7 +190,7 @@ class AddressTranslation(commands.Cog):
                 f"is: **{newAddressString}**"
             )
 
-    @commands.command(aliases=['fsv2bsf', 'fsvtobsf'])
+    @commands.command(aliases=['fsv2bsv', 'fsvtobsv'])
     async def ConvertFSVirtualAddressToBSVirtualAddress(self, ctx, arg):
         FSVirtToBSVirt = []
         FSVirtToBSVirt.append(
@@ -265,7 +265,7 @@ class AddressTranslation(commands.Cog):
                 f"**{newAddressString}**"
             )
 
-    @commands.command(aliases=['bsv2fsf', 'bsvtofsf'])
+    @commands.command(aliases=['bsv2fsv', 'bsvtofsv'])
     async def ConvertBSVirtualAddressToFSVirtualAddress(self, ctx, arg):
         BSVirtToFSVirt = []
         BSVirtToFSVirt.append(
