@@ -8,7 +8,7 @@ class VentureCards(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="card")
+    @commands.command(aliases=['card', 'chancecard', 'venture'])
     async def pull_card(self, ctx, arg=None):
         if not arg:
             arg = random.randint(1, 128)

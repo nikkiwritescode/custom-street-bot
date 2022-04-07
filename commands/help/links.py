@@ -5,14 +5,14 @@ class DisplayLinks(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="calc")
+    @commands.command(aliases=['calculator'])
     async def calc(self, ctx):
         await ctx.send(
             "Fortune Street Address Calculator => "
             "https://fortunestreetmodding.github.io/calculator"
         )
 
-    @commands.command(name="contribute")
+    @commands.command()
     async def contribute(self, ctx):
         await ctx.send(
             "This bot is open source! If you'd like to contribute, "
@@ -20,36 +20,36 @@ class DisplayLinks(commands.Cog):
             "https://github.com/nikkiwritescode/custom-street-bot"
         )
 
-    @commands.command(name="github")
-    async def git(self, ctx):
+    @commands.command(aliases=['git', 'repo'])
+    async def github(self, ctx):
         await ctx.send(
             "Fortune Street Modding on Github => "
             "https://github.com/FortuneStreetModding/"
         )
 
-    @commands.command(name="invite")
+    @commands.command(aliases=['discord', 'invite', 'serverlink'])
     async def invitation(self, ctx):
         await ctx.send(
             "Custom Street on Discord => "
             "https://discord.gg/DE9Hn7T"
         )
 
-    @commands.command(name="twitch")
+    @commands.command(aliases=['ttv'])
     async def twitch(self, ctx):
         await ctx.send(
             "Custom Street on Twitch => "
             "https://www.twitch.tv/customstreet"
         )
 
-    @commands.command(name="wiki")
+    @commands.command()
     async def wiki(self, ctx):
         await ctx.send(
             "Fortune Street Modding Wiki => "
             "https://github.com/FortuneStreetModding/fortune-avenue-qt/wiki"
         )
 
-    @commands.command(name="youtube")
-    async def yt(self, ctx):
+    @commands.command(aliases=['channel', 'tube', 'yt'])
+    async def youtube(self, ctx):
         await ctx.send(
             "Custom Street on YouTube => "
             "https://www.youtube.com/channel/UCYe4nHqb0HcWZ0pnoDP0Ijw"

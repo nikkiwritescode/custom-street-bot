@@ -9,7 +9,7 @@ class TextTranslation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="jp")
+    @commands.command(aliases=['japanese', 'jp'])
     async def TranslateToJapanese(self, ctx, *, arg):
         result = translator.translate_text(
             arg,
@@ -17,7 +17,7 @@ class TextTranslation(commands.Cog):
         )
         await ctx.send(result.text)
 
-    @commands.command(name="en")
+    @commands.command(aliases=['english', 'en'])
     async def TranslateToEnglish(self, ctx, *, arg):
         result = translator.translate_text(
             arg,

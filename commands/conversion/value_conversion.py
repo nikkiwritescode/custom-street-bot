@@ -7,14 +7,14 @@ class ValueConversion(commands.Cog):
         self.bot = bot
 
     # From Hex
-    @commands.command(name="hex2int")
+    @commands.command(aliases=['hex2int', 'hextoint'])
     async def hexToInt(self, ctx, arg):
         try:
             await ctx.send(int(arg, base=16))
         except ValueError:
             await ctx.send("Please enter a valid hexidecimal value!")
 
-    @commands.command(name="hex2float")
+    @commands.command(aliases=['hex2float', 'hextofloat'])
     async def hexToFloat(self, ctx, arg):
         try:
             await ctx.send(struct.unpack('!f', bytes.fromhex(arg))[0])
@@ -22,7 +22,7 @@ class ValueConversion(commands.Cog):
             await ctx.send("Please enter a valid hexidecimal value!")
 
     # To Hex
-    @commands.command(name="int2hex")
+    @commands.command(aliases=['int2hex', 'inttohex'])
     async def intToHex(self, ctx, arg):
         try:
             num = int(arg)
@@ -33,7 +33,7 @@ class ValueConversion(commands.Cog):
         except ValueError:
             await ctx.send("Please enter a valid integer value.")
 
-    @commands.command(name="float2hex")
+    @commands.command(aliases=['float2hex', 'floattohex'])
     async def floatToHex(self, ctx, arg):
         try:
             num = float(arg)

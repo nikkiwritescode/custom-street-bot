@@ -82,7 +82,7 @@ class DisplayHelp(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @commands.command(name="help")
+    @commands.command(aliases=['commands'])
     async def help(self, ctx):
         embed = discord.Embed(
             title="Overview of Available Commands",

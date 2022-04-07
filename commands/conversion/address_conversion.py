@@ -7,7 +7,7 @@ class AddressTranslation(commands.Cog):
         self.bot = bot
 
     # Fortune Street Virtual -> File Offset
-    @commands.command(name="fsv2fsf")
+    @commands.command(aliases=['fsv2fsf', 'fsvtofsf'])
     async def ConvertFSVirtualAddressToFSFileOffset(self, ctx, arg):
         FSVirtToFSFile = []
         FSVirtToFSFile.append(
@@ -99,7 +99,7 @@ class AddressTranslation(commands.Cog):
             )
 
     # Boom Street Virtual -> File Offset
-    @commands.command(name="bsv2bsf")
+    @commands.command(aliases=['bsv2bsf', 'bsvtobsf'])
     async def ConvertBSVirtualAddressToBSFileOffset(self, ctx, arg):
         BSVirtToBSFile = []
         BSVirtToBSFile.append(
@@ -190,7 +190,7 @@ class AddressTranslation(commands.Cog):
                 f"is: **{newAddressString}**"
             )
 
-    @commands.command(name="fsv2bsv")
+    @commands.command(aliases=['fsv2bsf', 'fsvtobsf'])
     async def ConvertFSVirtualAddressToBSVirtualAddress(self, ctx, arg):
         FSVirtToBSVirt = []
         FSVirtToBSVirt.append(
@@ -265,7 +265,7 @@ class AddressTranslation(commands.Cog):
                 f"**{newAddressString}**"
             )
 
-    @commands.command(name="bsv2fsv")
+    @commands.command(aliases=['bsv2fsf', 'bsvtofsf'])
     async def ConvertBSVirtualAddressToFSVirtualAddress(self, ctx, arg):
         BSVirtToFSVirt = []
         BSVirtToFSVirt.append(
