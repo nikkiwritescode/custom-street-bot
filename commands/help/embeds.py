@@ -2,81 +2,24 @@ from discord.ext import commands
 import discord
 
 from app import bot
+from commands.help.content.aliases import (
+    address_converter_aliases,
+    card_aliases,
+    help_aliases,
+    text_translation_aliases,
+    value_converter_aliases,
+    url_aliases
+)
+from commands.help.content.descriptions import (
+    address_converters_help,
+    help_help,
+    text_translation_help,
+    urls_help,
+    value_converters_help,
+    venture_cards_help
+)
 
 prefix = bot.command_prefix
-
-# Command Aliases
-
-address_converter_aliases = [
-    f"`{prefix}bsv2fsv` => "
-    "`ConvertBSVirtualAddressToFSVirtualAddress`, `bsvtofsv` \n",
-    f"`{prefix}fsv2bsv` => "
-    "`ConvertFSVirtualAddressToBSVirtualAddress`, `fsvtobsv` \n",
-    f"`{prefix}bsv2bsf` => "
-    "`ConvertBSVirtualAddressToBSFileOffset`, `bsvtobsf` \n",
-    f"`{prefix}fsv2fsf` => "
-    "`ConvertFSVirtualAddressToFSFileOffset`, `fsvtofsf` \n",
-]
-card_aliases = [
-    f"`{prefix}card` => `chancecard`, `pull_card`, `venture` \n",
-]
-help_aliases = [
-    f"`{prefix}aliases` => `alias`, `alt` \n",
-    f"`{prefix}help` => `commands` \n",
-]
-text_translation_aliases = [
-    f"`{prefix}en` => `english`.\n",
-    f"`{prefix}jp` => `japanese`\n",
-]
-value_converter_aliases = [
-    f"`{prefix}hex2int` => `hextoint`.\n",
-    f"`{prefix}hex2float` => `hextofloat`\n",
-    f"`{prefix}int2hex` => `inttohex`\n",
-    f"`{prefix}float2hex` => `floattohex`.",
-]
-url_aliases = [
-    f"`{prefix}calc` => `calculator`\n",
-    f"`{prefix}github` => `git`, `repo`\n",
-    f"`{prefix}invite` => `discord`, `invitation`, `serverlink`\n",
-    f"`{prefix}twitch` => `ttv`\n",
-    f"`{prefix}youtube` => `channel`, `tube`, `yt`\n",
-]
-
-# Command Help
-
-commands_address_converters_help = [
-    f"`{prefix}bsv2fsv` Boom Street Virtual Address to FS.\n",
-    f"`{prefix}fsv2bsv` Fortune Street Virtual Address to BS.\n",
-    f"`{prefix}bsv2bsf` BS Virtual Address to File Offset.\n",
-    f"`{prefix}fsv2fsf` FS Virtual Address to File Offset.\n",
-]
-commands_help_help = [
-    f"`{prefix}aliases` Display alternate triggers for bot commands.\n",
-    f"`{prefix}help` Display this panel.\n",
-]
-commands_text_translation_help = [
-    f"`{prefix}en` Convert text to English.\n",
-    f"`{prefix}jp` Convert text to Japanese.\n",
-]
-commands_urls_help = [
-    f"`{prefix}calc` Display the Address Calculator URL.\n",
-    f"`{prefix}contribute` Display a link to this bot's GitHub repo.\n",
-    f"`{prefix}github` Display the Github URL.\n",
-    f"`{prefix}invite` Display the server invite link.\n",
-    f"`{prefix}twitch` Display the Twitch channel URL.\n",
-    f"`{prefix}wiki` Display the Wiki URL.\n",
-    f"`{prefix}youtube` Display the YouTube channel URL.",
-]
-commands_value_converters_help = [
-    f"`{prefix}hex2int` Convert Hex to Decimal.\n",
-    f"`{prefix}hex2float` Convert Hex to Float.\n",
-    f"`{prefix}int2hex` Convert Decimal to Hex.\n",
-    f"`{prefix}float2hex` Convert Float to Hex.",
-]
-commands_venture_cards_help = [
-    f"`{prefix}card` Pull a random Venture Card.\n",
-    f"`{prefix}card <number>` Pull a specific Venture Card.\n",
-]
 
 
 class DisplayHelp(commands.Cog):
@@ -133,32 +76,32 @@ class DisplayHelp(commands.Cog):
         )
         embed.add_field(
             name="Address Converters",
-            value="".join(commands_address_converters_help),
+            value="".join(address_converters_help),
             inline=False,
         )
         embed.add_field(
             name="Value Converters",
-            value="".join(commands_value_converters_help),
+            value="".join(value_converters_help),
             inline=False,
         )
         embed.add_field(
             name="Text Translation (powered by DeepL)",
-            value="".join(commands_text_translation_help),
+            value="".join(text_translation_help),
             inline=False,
         )
         embed.add_field(
             name="Venture Cards",
-            value="".join(commands_venture_cards_help),
+            value="".join(venture_cards_help),
             inline=False
         )
         embed.add_field(
             name="URLs",
-            value="".join(commands_urls_help),
+            value="".join(urls_help),
             inline=False
         )
         embed.add_field(
             name="Help",
-            value="".join(commands_help_help),
+            value="".join(help_help),
             inline=False
         )
         await ctx.send(embed=embed)
