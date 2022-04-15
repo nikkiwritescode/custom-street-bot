@@ -45,7 +45,8 @@ class DisplayLinks(commands.Cog):
     async def wiki(self, ctx):
         await ctx.send(
             "Fortune Street Modding Wiki => "
-            "https://github.com/FortuneStreetModding/fortune-avenue-qt/wiki"
+            "https://github.com/FortuneStreetModding"
+            "/fortunestreetmodding.github.io/wiki"
         )
 
     @commands.command(aliases=['channel', 'tube', 'yt'])
