@@ -3,6 +3,31 @@ version: 2.1
 orbs:
   terraform: circleci/terraform@3.0.1
 
+aliases:
+  - &install-dependencies
+    name: Installing dependencies...
+    command: |
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      unzip awscliv2.zip
+      sudo ./aws/install --update
+      sudo apt-get install less
+  - &set-up-aws-cli-profile
+    name: Setting up the AWS CLI Profile...
+    command: |
+      read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN \<<< \
+        $(aws sts assume-role-with-web-identity \
+          --role-arn ${ASSUME_ROLE_ARN} \
+          --role-session-name "CircleCI-${CIRCLE_PROJECT_REPONAME}-${CIRCLE_JOB}" \
+          --web-identity-token $CIRCLE_OIDC_TOKEN \
+          --duration-seconds 900 \
+          --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
+          --output text)
+      {
+          echo "export AWS_ACCESS_KEY_ID=\"${AWS_ACCESS_KEY_ID}\""
+          echo "export AWS_SESSION_TOKEN=\"${AWS_SESSION_TOKEN}\""
+          echo "export AWS_SECRET_ACCESS_KEY=\"${AWS_SECRET_ACCESS_KEY}\""
+      } >>"$BASH_ENV"
+
 commands:
   terraform-deploy:
     description: Apply a Terraform configuration via Terraform Cloud
@@ -48,25 +73,13 @@ jobs:
       - run:
           name: Cloning repository recursively...
           command: git clone <<parameters.custom_street_bot_repo>> --recursive
-      - run:
-          name: Installing AWS CLI V2...
-          command: |
-              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-              unzip awscliv2.zip
-              sudo ./aws/install
-      - run:
-          name: Setting up the AWS CLI Profile...
-          command: |
-              aws configure set profile.circleci.region us-east-2
-              aws configure set profile.circleci.role_arn $ASSUME_ROLE_ARN
-              aws configure set profile.circleci.external_id $ASSUME_ROLE_EXTERNAL_ID
-              aws configure set profile.circleci.role_session_name circlecideployrole
-              aws configure set profile.circleci.credential_source Environment
+      - run: *install-dependencies
+      - run: *set-up-aws-cli-profile
       - run:
           name: Building image and pushing to ECR...
           command: |
               cd custom-street-bot
-              aws ecr get-login-password --region us-east-2 --profile circleci | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
+              aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
               docker build . --ssh default -t custom-street-bot-amd64:$CIRCLE_SHA1
               docker tag custom-street-bot-amd64:$CIRCLE_SHA1 <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-amd64
               docker push <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-amd64
@@ -91,25 +104,13 @@ jobs:
       - run:
           name: Cloning repository recursively...
           command: git clone <<parameters.custom_street_bot_repo>> --recursive
-      - run:
-          name: Installing AWS CLI V2...
-          command: |
-              curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
-              unzip awscliv2.zip
-              sudo ./aws/install --update
-      - run:
-          name: Setting up the AWS CLI Profile...
-          command: |
-              aws configure set profile.circleci.region us-east-2
-              aws configure set profile.circleci.role_arn $ASSUME_ROLE_ARN
-              aws configure set profile.circleci.external_id $ASSUME_ROLE_EXTERNAL_ID
-              aws configure set profile.circleci.role_session_name circlecideployrole
-              aws configure set profile.circleci.credential_source Environment
+      - run: *install-dependencies
+      - run: *set-up-aws-cli-profile
       - run:
           name: Building image and pushing to ECR...
           command: |
               cd custom-street-bot
-              aws ecr get-login-password --region us-east-2 --profile circleci | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
+              aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
               docker build . --ssh default -t custom-street-bot-arm64:$CIRCLE_SHA1
               docker tag custom-street-bot-arm64:$CIRCLE_SHA1 <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-arm64
               docker push <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-arm64
@@ -125,24 +126,12 @@ jobs:
     steps:
       - setup_remote_docker:
           version: 20.10.11
-      - run:
-          name: Installing AWS CLI V2...
-          command: |
-              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-              unzip awscliv2.zip
-              sudo ./aws/install
-      - run:
-          name: Setting up the AWS CLI Profile...
-          command: |
-              aws configure set profile.circleci.region us-east-2
-              aws configure set profile.circleci.role_arn $ASSUME_ROLE_ARN
-              aws configure set profile.circleci.external_id $ASSUME_ROLE_EXTERNAL_ID
-              aws configure set profile.circleci.role_session_name circlecideployrole
-              aws configure set profile.circleci.credential_source Environment
+      - run: *install-dependencies
+      - run: *set-up-aws-cli-profile
       - run:
           name: Creating multiarch manifest...
           command: |
-            aws ecr get-login-password --region us-east-2 --profile circleci | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
+            aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 632957227412.dkr.ecr.us-east-2.amazonaws.com
             docker manifest create <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-multiarch \
             --amend <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-amd64 \
             --amend <<parameters.ecr_repo_uri>>:$CIRCLE_SHA1-arm64
