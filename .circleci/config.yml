@@ -62,7 +62,7 @@ jobs:
     parameters:
       ecr_repo_uri:
         type: string
-      custom_street_bot_repo:
+      github_repo:
         type: string
     steps:
       - setup_remote_docker:
@@ -72,7 +72,7 @@ jobs:
           command: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: Cloning repository recursively...
-          command: git clone <<parameters.custom_street_bot_repo>> --recursive
+          command: git clone <<parameters.github_repo>> --recursive
       - run: *install-dependencies
       - run: *set-up-aws-cli-profile
       - run:
@@ -95,7 +95,7 @@ jobs:
     parameters:
       ecr_repo_uri:
         type: string
-      custom_street_bot_repo:
+      github_repo:
         type: string
     steps:
       - run:
@@ -103,7 +103,7 @@ jobs:
           command: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: Cloning repository recursively...
-          command: git clone <<parameters.custom_street_bot_repo>> --recursive
+          command: git clone <<parameters.github_repo>> --recursive
       - run: *install-dependencies
       - run: *set-up-aws-cli-profile
       - run:
@@ -149,14 +149,14 @@ workflows:
       - build-amd64:
           context: aws-global
           ecr_repo_uri: $AWS_ECR_REPO
-          custom_street_bot_repo: $CUSTOM_STREET_BOT_REPO
+          github_repo: $GITHUB_REPO
           filters:
             branches:
               only: main
       - build-arm64:
           context: aws-global
           ecr_repo_uri: $AWS_ECR_REPO
-          custom_street_bot_repo: $CUSTOM_STREET_BOT_REPO
+          github_repo: $GITHUB_REPO
           filters:
             branches:
               only: main
