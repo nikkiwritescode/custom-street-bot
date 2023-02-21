@@ -3,10 +3,12 @@ from app import bot
 prefix = bot.command_prefix
 
 address_converters_help = [
-    f"`{prefix}bsv2fsv` Boom Street Virtual Address to FS.\n",
-    f"`{prefix}fsv2bsv` Fortune Street Virtual Address to BS.\n",
-    f"`{prefix}bsv2bsf` BS Virtual Address to File Offset.\n",
-    f"`{prefix}fsv2fsf` FS Virtual Address to File Offset.\n",
+    f"`{prefix}bsv2fsv` Boom Street Virtual Address to Fortune Street.\n",
+    f"`{prefix}bsv2isv` Boom Street Virtual Address to Itadaki Street Wii.\n",
+    f"`{prefix}fsv2bsv` Fortune Street Virtual Address to Boom Street.\n",
+    f"`{prefix}isv2bsv` Itadaki Street Wii Virtual Address to Boom Street.\n",
+    f"`{prefix}bsv2bsf` Boom Street Virtual Address to File Offset.\n",
+    f"`{prefix}fsv2fsf` Fortune Street Virtual Address to File Offset.\n",
 ]
 help_help = [
     f"`{prefix}aliases` Display alternate triggers for bot commands.\n",
