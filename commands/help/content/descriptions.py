@@ -6,7 +6,9 @@ address_converters_help = [
     f"`{prefix}bsv2fsv` Boom Street Virtual Address to Fortune Street.\n",
     f"`{prefix}bsv2isv` Boom Street Virtual Address to Itadaki Street Wii.\n",
     f"`{prefix}fsv2bsv` Fortune Street Virtual Address to Boom Street.\n",
+    f"`{prefix}fsv2isv` Fortune Street Virtual Address to Itadaki Street Wii.\n",
     f"`{prefix}isv2bsv` Itadaki Street Wii Virtual Address to Boom Street.\n",
+    f"`{prefix}isv2fsv` Itadaki Street Wii Virtual Address to Fortune Street.\n",
     f"`{prefix}bsv2bsf` Boom Street Virtual Address to File Offset.\n",
     f"`{prefix}fsv2fsf` Fortune Street Virtual Address to File Offset.\n",
 ]

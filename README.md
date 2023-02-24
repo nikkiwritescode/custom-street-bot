@@ -25,7 +25,9 @@
 * `bsv2fsv` - Converts a Boom Street Virtual Address to Fortune Street.
 * `bsv2isv` - Converts a Boom Street Virtual Address to Itadaki Street Wii.
 * `fsv2bsv` - Converts a Fortune Street Virtual Address to Boom Street.
+* `fsv2isv` - Converts a Fortune Street Virtual Address to Itadaki Street Wii.
 * `isv2bsv` - Converts a Itadaki Street Wii Virtual Address to Boom Street.
+* `isv2fsv` - Converts a Itadaki Street Wii Virtual Address to Fortune Street.
 * `bsv2bsf` - Converts a Boom Street Virtual Address to Boom Street File Offset.
 * `fsv2fsf` - Converts a Fortune Street Virtual Address to Fortune Street File Offset.
 

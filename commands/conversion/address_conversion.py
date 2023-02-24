@@ -7,7 +7,10 @@ offset_json_path = "commands/conversion/offsets/offsets.json"
 BSVirtToISVirt = []
 BSVirtToFSVirt = []
 BSVirtToBSFile = []
+FSVirtToBSVirt = []
 FSVirtToFSFile = []
+ISVirtToBSVirt = []
+ISVirtToFSVirt = []
 
 
 def initialize_lists():
@@ -17,36 +20,104 @@ def initialize_lists():
     for row in offset_dict["BoomVirtualToItadakiVirtual"]:
         BSVirtToISVirt.append(
             AddressSectionMapper(
-                offsetBegin=row[0],
-                offsetEnd=row[1],
-                delta=row[2]
+                offsetBegin=int(row[0], base=16),
+                offsetEnd=int(row[1], base=16),
+                delta=int(row[2], base=16)
             )
         )
 
     for row in offset_dict["BoomVirtualToFortuneVirtual"]:
         BSVirtToFSVirt.append(
             AddressSectionMapper(
-                offsetBegin=row[0],
-                offsetEnd=row[1],
-                delta=row[2]
+                offsetBegin=int(row[0], base=16),
+                offsetEnd=int(row[1], base=16),
+                delta=int(row[2], base=16)
             )
         )
 
     for row in offset_dict["BoomVirtualToBoomFile"]:
         BSVirtToBSFile.append(
             AddressSectionMapper(
-                offsetBegin=row[0],
-                offsetEnd=row[1],
-                delta=row[2]
+                offsetBegin=int(row[0], base=16),
+                offsetEnd=int(row[1], base=16),
+                delta=int(row[2], base=16)
+            )
+        )
+
+    for row in offset_dict["BoomVirtualToFortuneVirtual"]:
+        begin = int(row[0], base=16)
+        end = int(row[1], base=16)
+        delta = int(row[2], base=16)
+
+        FSVirtToBSVirt.append(
+            AddressSectionMapper(
+                offsetBegin=begin-delta,
+                offsetEnd=end-delta,
+                delta=delta
             )
         )
 
     for row in offset_dict["FortuneVirtualToFortuneFile"]:
         FSVirtToFSFile.append(
             AddressSectionMapper(
-                offsetBegin=row[0],
-                offsetEnd=row[1],
-                delta=row[2]
+                offsetBegin=int(row[0], base=16),
+                offsetEnd=int(row[1], base=16),
+                delta=int(row[2], base=16)
+            )
+        )
+
+    for row in offset_dict["BoomVirtualToItadakiVirtual"]:
+        begin = int(row[0], base=16)
+        end = int(row[1], base=16)
+        delta = int(row[2], base=16)
+
+        ISVirtToBSVirt.append(
+            AddressSectionMapper(
+                offsetBegin=begin-delta,
+                offsetEnd=end-delta,
+                delta=delta
+            )
+        )
+
+    # Itadaki Street Wii to Fortune Street
+
+    # Because Itadaki Street offset deltas are all a little
+    # higher than Fortune Street ones, we can basically
+    # subtract the Itadaki delta from the Fortune delta
+    # and get our correct result, since both conversions
+    # are in the same direction from Boom Street.
+
+    for i, data in enumerate(ISVirtToBSVirt):
+        begin = data.offsetBegin
+        end = data.offsetEnd
+        delta = data.delta - BSVirtToFSVirt[i].delta
+
+        ISVirtToFSVirt.append(
+            AddressSectionMapper(
+                offsetBegin=begin,
+                offsetEnd=end,
+                delta=delta
+            )
+        )
+
+    # Fortune Street to Itadaki Street
+
+    # A similar concept works here, but I enumerate through
+    # FSVirtToBSVirt instead to ensure all the offsetBegins
+    # and offsetEnds line up as they should.
+
+    for i, data in enumerate(FSVirtToBSVirt):
+        begin = data.offsetBegin
+        end = data.offsetEnd
+        delta = BSVirtToISVirt[i].delta - data.delta
+
+        print(f"{hex(begin)}, {hex(end)}, {hex(delta)}")
+
+        ISVirtToFSVirt.append(
+            AddressSectionMapper(
+                offsetBegin=begin,
+                offsetEnd=end,
+                delta=delta
             )
         )
 
@@ -55,18 +126,14 @@ def convert_address(input, list_of_offsets, operator, destination_game, type):
     address = int(input, base=16)
     newAddress = 0
     for section in list_of_offsets:
-        begin = int(section.offsetBegin, base=16)
-        end = int(section.offsetEnd, base=16)
-        delta = int(section.delta, base=16)
-
-        if begin <= address and address <= end:
+        if section.offsetBegin <= address and address <= section.offsetEnd:
             if(operator == "add"):
-                newAddress = address + delta
+                newAddress = address + section.delta
             elif(operator == "subtract"):
-                newAddress = address - delta
+                newAddress = address - section.delta
             else:
                 return ("Invalid request.")
-    if newAddress == 0 or newAddress == address:
+    if newAddress == 0:
         return ("The specified address is invalid.")
     else:
         return (
@@ -126,9 +193,22 @@ class AddressTranslation(commands.Cog):
         await ctx.send(
             convert_address(
                 arg,
-                BSVirtToFSVirt,
+                FSVirtToBSVirt,
                 "add",
                 "Boom Street",
+                "virtual"
+            )
+        )
+
+    # Fortune Street Virtual -> Itadaki Street Wii Virtual
+    @commands.command(aliases=['fsv2isv', 'fsvtoisv'])
+    async def ConvertFSVirtualAddressToISVirtualAddress(self, ctx, arg):
+        await ctx.send(
+            convert_address(
+                arg,
+                ISVirtToFSVirt,
+                "subtract",
+                "Itadaki Street Wii",
                 "virtual"
             )
         )
@@ -152,9 +232,22 @@ class AddressTranslation(commands.Cog):
         await ctx.send(
             convert_address(
                 arg,
-                BSVirtToISVirt,
+                ISVirtToBSVirt,
                 "add",
                 "Boom Street",
+                "virtual"
+            )
+        )
+
+    # Itadaki Street Virtual -> Fortune Street Virtual
+    @commands.command(aliases=['isv2fsv', 'isvtofsv'])
+    async def ConvertISVirtualAddressToFSVirtualAddress(self, ctx, arg):
+        await ctx.send(
+            convert_address(
+                arg,
+                ISVirtToFSVirt,
+                "add",
+                "Fortune Street",
                 "virtual"
             )
         )
