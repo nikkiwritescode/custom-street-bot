@@ -6,7 +6,9 @@ address_converter_aliases = [
     f"`{prefix}bsv2fsv` => `bsvtofsv` \n",
     f"`{prefix}bsv2isv` => `bsvtoisv` \n",
     f"`{prefix}fsv2bsv` => `fsvtobsv` \n",
+    f"`{prefix}fsv2isv` => `fsvtoisv` \n",
     f"`{prefix}isv2bsv` => `isvtobsv` \n",
+    f"`{prefix}isv2fsv` => `isvtofsv` \n",
     f"`{prefix}bsv2bsf` => `bsvtobsf` \n",
     f"`{prefix}fsv2fsf` => `fsvtofsf` \n",
 ]
