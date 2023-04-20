@@ -11,7 +11,7 @@ FSVirtToBSVirt = []
 FSVirtToFSFile = []
 ISVirtToBSVirt = []
 ISVirtToFSVirt = []
-
+ISVirtToISFile = []
 
 def initialize_lists():
     with open(offset_json_path, "r") as read_offset_file:
@@ -76,6 +76,15 @@ def initialize_lists():
                 offsetBegin=begin-delta,
                 offsetEnd=end-delta,
                 delta=delta
+            )
+        )
+    
+    for row in offset_dict["ItadakiVirtualToItadakiFile"]:
+        ISVirtToISFile.append(
+            AddressSectionMapper(
+                offsetBegin=int(row[0], base=16),
+                offsetEnd=int(row[1], base=16),
+                delta=int(row[2], base=16)
             )
         )
 
@@ -249,6 +258,19 @@ class AddressTranslation(commands.Cog):
                 "add",
                 "Fortune Street",
                 "virtual"
+            )
+        )
+    
+    # Itadaki Street Virtual -> Itadaki Street File Offset
+    @commands.command(aliases=['isv2isf', 'isvtoisf'])
+    async def ConvertISVirtualAddressToISFileOffset(self, ctx, arg):
+        await ctx.send(
+            convert_address(
+                arg,
+                ISVirtToISFile,
+                "subtract",
+                "Itadaki Street",
+                "file"
             )
         )
 
