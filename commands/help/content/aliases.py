@@ -11,6 +11,7 @@ address_converter_aliases = [
     f"`{prefix}isv2fsv` => `isvtofsv` \n",
     f"`{prefix}bsv2bsf` => `bsvtobsf` \n",
     f"`{prefix}fsv2fsf` => `fsvtofsf` \n",
+    f"`{prefix}isv2isf` => `isvtoisf` \n",
 ]
 card_aliases = [
     f"`{prefix}card` => `chancecard`, `pull_card`, `venture` \n",
