@@ -11,6 +11,7 @@ address_converters_help = [
     f"`{prefix}isv2fsv` Itadaki Street Wii Virtual Address to Fortune Street.\n",
     f"`{prefix}bsv2bsf` Boom Street Virtual Address to File Offset.\n",
     f"`{prefix}fsv2fsf` Fortune Street Virtual Address to File Offset.\n",
+    f"`{prefix}isv2isf` Itadaki Street Virtual Address to File Offset.\n",
 ]
 help_help = [
     f"`{prefix}aliases` Display alternate triggers for bot commands.\n",
