@@ -1,61 +1,34 @@
+import discord
+from discord import app_commands
 from discord.ext import commands
+from textwrap import dedent
+
+from commands.help.content.links import link_choices
 
 
 class DisplayLinks(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['calculator'])
-    async def calc(self, ctx):
-        await ctx.send(
-            "Fortune Street Address Calculator => "
-            "https://fortunestreetmodding.github.io/calculator"
-        )
+    url_choices = []
+    for k, v in link_choices.items():
+        url_choices.append(app_commands.Choice(name=v[0], value=k))
 
-    @commands.command()
-    async def contribute(self, ctx):
-        await ctx.send(
-            "This bot is open source! If you'd like to contribute, "
-            "you can find the source code, here => "
-            "https://github.com/nikkiwritescode/custom-street-bot"
-        )
-
-    @commands.command(aliases=['git', 'repo'])
-    async def github(self, ctx):
-        await ctx.send(
-            "Fortune Street Modding on Github => "
-            "https://github.com/FortuneStreetModding/"
-        )
-
-    @commands.command(aliases=['discord', 'invite', 'serverlink'])
-    async def invitation(self, ctx):
-        await ctx.send(
-            "Custom Street on Discord => "
-            "https://discord.gg/DE9Hn7T"
-        )
-
-    @commands.command(aliases=['ttv'])
-    async def twitch(self, ctx):
-        await ctx.send(
-            "Custom Street on Twitch => "
-            "https://www.twitch.tv/customstreet"
-        )
-
-    @commands.command()
-    async def wiki(self, ctx):
-        await ctx.send(
-            "Fortune Street Modding Wiki => "
-            "https://github.com/FortuneStreetModding"
-            "/fortunestreetmodding.github.io/wiki"
-        )
-
-    @commands.command(aliases=['channel', 'tube', 'yt'])
-    async def youtube(self, ctx):
-        await ctx.send(
-            "Custom Street on YouTube => "
-            "https://www.youtube.com/channel/UCYe4nHqb0HcWZ0pnoDP0Ijw"
-        )
+    @app_commands.command(
+        name="links", description="Show various Custom Street-related URLs"
+    )
+    @app_commands.describe(url_to_show="Which URL to show")
+    @app_commands.choices(url_to_show=url_choices)
+    async def show_link(
+        self,
+        interaction: discord.Interaction,
+        url_to_show: app_commands.Choice[str]
+    ):
+        send = interaction.response.send_message
+        for k, v in link_choices.items():
+            if url_to_show.value == k:
+                await send(dedent(v[1]).strip("\n"))
 
 
-def setup(bot):
-    bot.add_cog(DisplayLinks(bot))
+async def setup(bot):
+    await bot.add_cog(DisplayLinks(bot))

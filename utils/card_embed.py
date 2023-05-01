@@ -1,6 +1,7 @@
 import discord
 import json
 
+card_images_path = "commands/venture/cards/images"
 en_json_path = "commands/venture/cards/text/en.json"
 jp_json_path = "commands/venture/cards/text/jp.json"
 
@@ -11,7 +12,7 @@ class CardEmbed:
         self.embed = embed
 
     def create_card_embed(card_id, username):
-        image = f"commands/venture/cards/images/{card_id}.png"
+        image = f"{card_images_path}/{card_id}.png"
         file = discord.File(image, filename="card.png")
 
         with open(en_json_path, "r") as read_file_en:
@@ -24,8 +25,7 @@ class CardEmbed:
 
         embed = discord.Embed(
             title="You got a Venture Card!",
-            color=0x000000,
-            inline=True,
+            color=0x000000
         )
         embed.add_field(
             name=f"#{card_id}",

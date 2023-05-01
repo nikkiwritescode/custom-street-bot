@@ -1,49 +1,104 @@
+import discord
+from discord import app_commands
 from discord.ext import commands
 import struct
 
 
+def check_if_string_is_hex(value: str):
+    try:
+        int(value, 16)
+        return True
+    except ValueError:
+        return False
+
+
 class ValueConversion(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # From Hex
-    @commands.command(aliases=['hex2int', 'hextoint'])
-    async def hexToInt(self, ctx, arg):
-        try:
-            await ctx.send(int(arg, base=16))
-        except ValueError:
-            await ctx.send("Please enter a valid hexidecimal value!")
+    @app_commands.command(
+        name="convert_value_to_hex",
+        description="Convert a value to Hexadecimal",
+    )
+    async def convert_value_to_hex(
+        self,
+        interaction: discord.Interaction,
+        value: str
+    ):
+        send = interaction.response.send_message
+        response = f"You entered: {value}\nValue converted to hex: "
 
-    @commands.command(aliases=['hex2float', 'hextofloat'])
-    async def hexToFloat(self, ctx, arg):
-        try:
-            await ctx.send(struct.unpack('!f', bytes.fromhex(arg))[0])
-        except ValueError:
-            await ctx.send("Please enter a valid hexidecimal value!")
+        if "." in value:  # if float
+            error_msg = response + "ERROR converting float to hex"
+            num = float(value)
+            assert type(num) == float, await send(error_msg)
+            try:
+                await send(hex(struct.unpack("<I", struct.pack("<f", num))[0]))
+            except ValueError:
+                await send(response + error_msg)
+        else:  # if int
+            error_msg = response + "ERROR converting int to hex"
+            num = int(value)
+            assert type(num) == int, await send(error_msg)
+            try:
+                await send(hex(num))
+            except ValueError:
+                await send(error_msg)
 
-    # To Hex
-    @commands.command(aliases=['int2hex', 'inttohex'])
-    async def intToHex(self, ctx, arg):
-        try:
-            num = int(arg)
-            assert type(num) == int, await ctx.send(
-                "Please enter a valid integer value."
-            )
-            await ctx.send(hex(num))
-        except ValueError:
-            await ctx.send("Please enter a valid integer value.")
+    @app_commands.command(
+        name="convert_value_to_int",
+        description="Convert a value to integer",
+    )
+    async def convert_value_to_int(
+        self,
+        interaction: discord.Interaction,
+        value: str,
+    ):
+        send = interaction.response.send_message
+        response = f"You entered: {value}\nValue converted to int: "
 
-    @commands.command(aliases=['float2hex', 'floattohex'])
-    async def floatToHex(self, ctx, arg):
-        try:
-            num = float(arg)
-            assert type(num) == float, await ctx.send(
-                "Please enter a valid floating-point value."
-            )
-            await ctx.send(hex(struct.unpack('<I', struct.pack('<f', num))[0]))
-        except ValueError:
-            await ctx.send("Please enter a valid floating-point value.")
+        if check_if_string_is_hex(value):  # if hex
+            error_msg = response + "ERROR converting hex to int"
+            if value[:2] == "0x":
+                value = value[2:]
+            try:
+                await send(int(value, base=16))
+            except ValueError:
+                await send(error_msg)
+        else:  # if float
+            error_msg = response + "ERROR converting float to int"
+            num = float(value)
+            assert type(num) == float, await send(error_msg)
+            try:
+                await send(round(num))
+            except ValueError:
+                await send(error_msg)
+
+    @app_commands.command(
+        name="convert_value_to_float",
+        description="Convert a value to float",
+    )
+    async def convert_value_to_float(
+        self, interaction: discord.Interaction, value: str
+    ):
+        send = interaction.response.send_message
+        response = f"You entered: {value}\nValue converted to float: "
+
+        try:  # if int
+            num = int(value)
+            await send(float(num))
+        except ValueError:  # if hex
+            if check_if_string_is_hex(value):
+                error_msg = response + "ERROR converting hex to float"
+                if value[:2] == "0x":
+                    value = value[2:]
+                try:
+                    await send(struct.unpack("!f", bytes.fromhex(value))[0])
+                except ValueError:
+                    await send(error_msg)
+            else:
+                await send(response + "ERROR. Unknown input type.")
 
 
-def setup(bot):
-    bot.add_cog(ValueConversion(bot))
+async def setup(bot):
+    await bot.add_cog(ValueConversion(bot))
