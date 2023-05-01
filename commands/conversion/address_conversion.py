@@ -1,93 +1,74 @@
-from utils.address_section_mapper import AddressSectionMapper
+import discord
+from discord import app_commands
 from discord.ext import commands
+from utils.address_section_mapper import AddressSectionMapper
 import json
 
 offset_json_path = "commands/conversion/offsets/offsets.json"
 
-BSVirtToISVirt = []
-BSVirtToFSVirt = []
-BSVirtToBSFile = []
-FSVirtToBSVirt = []
-FSVirtToFSFile = []
-ISVirtToBSVirt = []
-ISVirtToFSVirt = []
-ISVirtToISFile = []
+# Address Conversion lists
+
+BSVirtToISVirt = BSVirtToFSVirt = BSVirtToBSFile = []
+FSVirtToBSVirt = FSVirtToISVirt = FSVirtToFSFile = []
+ISVirtToBSVirt = ISVirtToFSVirt = ISVirtToISFile = []
+
+# Game Names
+
+# This seems silly, but we use these strings
+# _all over the place_. We're able to save quite
+# a few lines by defining them here.
+
+bs = "Boom Street"
+fs = "Fortune Street"
+isw = "Itadaki Street Wii"
+
+# Initialization
+
+# This function contains the code to initialize
+# a single list. If we're performing this lookup
+# in reverse (looking for FS-to-BS data in a
+# BS-to_FS dataset, for example), we'll subtract
+# the delta from the beginning and ending values.
+
+
+def init_list(offset_dict: dict, dict_name: str, reverse: bool):
+    list = []
+    for row in offset_dict[dict_name]:
+        if reverse:
+            delta = int(row[2], base=16)
+            begin = int(row[0], base=16) - delta
+            end = int(row[1], base=16) - delta
+        else:
+            delta = int(row[2], base=16)
+            begin = int(row[0], base=16)
+            end = int(row[1], base=16)
+        list.append(AddressSectionMapper(begin, end, delta))
+    return list
+
+
+# This function is for calling the above one
+# to initialize all our lists.
+
 
 def initialize_lists():
+    global BSVirtToISVirt, BSVirtToFSVirt, BSVirtToBSFile
+    global FSVirtToBSVirt, FSVirtToFSFile
+    global ISVirtToBSVirt, ISVirtToISFile
+
     with open(offset_json_path, "r") as read_offset_file:
-        offset_dict = json.load(read_offset_file)
+        offsets = json.load(read_offset_file)
 
-    for row in offset_dict["BoomVirtualToItadakiVirtual"]:
-        BSVirtToISVirt.append(
-            AddressSectionMapper(
-                offsetBegin=int(row[0], base=16),
-                offsetEnd=int(row[1], base=16),
-                delta=int(row[2], base=16)
-            )
-        )
+    BSVirtToISVirt = init_list(offsets, "BoomVirtualToItadakiVirtual", False)
+    BSVirtToFSVirt = init_list(offsets, "BoomVirtualToFortuneVirtual", False)
+    BSVirtToBSFile = init_list(offsets, "BoomVirtualToBoomFile", False)
 
-    for row in offset_dict["BoomVirtualToFortuneVirtual"]:
-        BSVirtToFSVirt.append(
-            AddressSectionMapper(
-                offsetBegin=int(row[0], base=16),
-                offsetEnd=int(row[1], base=16),
-                delta=int(row[2], base=16)
-            )
-        )
+    FSVirtToBSVirt = init_list(offsets, "BoomVirtualToFortuneVirtual", True)
+    FSVirtToFSFile = init_list(offsets, "FortuneVirtualToFortuneFile", False)
 
-    for row in offset_dict["BoomVirtualToBoomFile"]:
-        BSVirtToBSFile.append(
-            AddressSectionMapper(
-                offsetBegin=int(row[0], base=16),
-                offsetEnd=int(row[1], base=16),
-                delta=int(row[2], base=16)
-            )
-        )
+    ISVirtToBSVirt = init_list(offsets, "BoomVirtualToItadakiVirtual", True)
+    ISVirtToISFile = init_list(offsets, "ItadakiVirtualToItadakiFile", False)
 
-    for row in offset_dict["BoomVirtualToFortuneVirtual"]:
-        begin = int(row[0], base=16)
-        end = int(row[1], base=16)
-        delta = int(row[2], base=16)
-
-        FSVirtToBSVirt.append(
-            AddressSectionMapper(
-                offsetBegin=begin-delta,
-                offsetEnd=end-delta,
-                delta=delta
-            )
-        )
-
-    for row in offset_dict["FortuneVirtualToFortuneFile"]:
-        FSVirtToFSFile.append(
-            AddressSectionMapper(
-                offsetBegin=int(row[0], base=16),
-                offsetEnd=int(row[1], base=16),
-                delta=int(row[2], base=16)
-            )
-        )
-
-    for row in offset_dict["BoomVirtualToItadakiVirtual"]:
-        begin = int(row[0], base=16)
-        end = int(row[1], base=16)
-        delta = int(row[2], base=16)
-
-        ISVirtToBSVirt.append(
-            AddressSectionMapper(
-                offsetBegin=begin-delta,
-                offsetEnd=end-delta,
-                delta=delta
-            )
-        )
-    
-    for row in offset_dict["ItadakiVirtualToItadakiFile"]:
-        ISVirtToISFile.append(
-            AddressSectionMapper(
-                offsetBegin=int(row[0], base=16),
-                offsetEnd=int(row[1], base=16),
-                delta=int(row[2], base=16)
-            )
-        )
-
+    # Special Cases
     # Itadaki Street Wii to Fortune Street
 
     # Because Itadaki Street offset deltas are all a little
@@ -101,13 +82,7 @@ def initialize_lists():
         end = data.offsetEnd
         delta = data.delta - BSVirtToFSVirt[i].delta
 
-        ISVirtToFSVirt.append(
-            AddressSectionMapper(
-                offsetBegin=begin,
-                offsetEnd=end,
-                delta=delta
-            )
-        )
+        ISVirtToFSVirt.append(AddressSectionMapper(begin, end, delta))
 
     # Fortune Street to Itadaki Street
 
@@ -120,160 +95,142 @@ def initialize_lists():
         end = data.offsetEnd
         delta = BSVirtToISVirt[i].delta - data.delta
 
-        print(f"{hex(begin)}, {hex(end)}, {hex(delta)}")
-
-        ISVirtToFSVirt.append(
-            AddressSectionMapper(
-                offsetBegin=begin,
-                offsetEnd=end,
-                delta=delta
-            )
-        )
+        FSVirtToISVirt.append(AddressSectionMapper(begin, end, delta))
 
 
-def convert_address(input, list_of_offsets, operator, destination_game, type):
+# Address Conversion
+# As above, this function is about performing a single conversion...
+
+
+def convert(input, list_of_offsets, operator, destination_game, type):
     address = int(input, base=16)
     newAddress = 0
+    response = f"You entered: **{address:02X}**\n"
     for section in list_of_offsets:
         if section.offsetBegin <= address and address <= section.offsetEnd:
-            if(operator == "add"):
+            if operator == "add":
                 newAddress = address + section.delta
-            elif(operator == "subtract"):
+            elif operator == "subtract":
                 newAddress = address - section.delta
             else:
-                return ("Invalid request.")
+                return "Invalid request."
     if newAddress == 0:
-        return ("The specified address is invalid.")
+        response += "The specified address is invalid."
+        return response
     else:
-        return (
+        response += (
             f"The equivalent {type} address in "
             f"{destination_game} is **{newAddress:02X}**"
         )
+        return response
 
 
-class AddressTranslation(commands.Cog):
+# ...wheras the ones in this class below
+# call the above to perform more complex
+# conversions.
+
+
+class AddressConversion(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         # populate the lists once
         initialize_lists()
 
-    # Boom Street Virtual -> Boom Street File Offset
-    @commands.command(aliases=['bsv2bsf', 'bsvtobsf'])
-    async def ConvertBSVirtualAddressToBSFileOffset(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                BSVirtToBSFile,
-                "subtract",
-                "Boom Street",
-                "file"
-            )
-        )
+    @app_commands.command(
+        name="convert_address_to_file_offset",
+        description="Convert a virtual address to file offset",
+    )
+    @app_commands.describe(address="The virtual address to convert")
+    @app_commands.choices(
+        game=[
+            app_commands.Choice(name=bs, value="boom"),
+            app_commands.Choice(name=fs, value="fortune"),
+            app_commands.Choice(name=isw, value="itadaki"),
+        ]
+    )
+    async def convert_to_file_offset(
+        self,
+        interaction: discord.Interaction,
+        address: str,
+        game: app_commands.Choice[str],
+    ):
+        send = interaction.response.send_message
+        match game.value:
+            case "boom":
+                await send(
+                    convert(address, BSVirtToBSFile, "subtract", bs, "file")
+                )
+            case "fortune":
+                await send(
+                    convert(address, FSVirtToFSFile, "subtract", fs, "file")
+                )
+            case "itadaki":
+                await send(
+                    convert(address, ISVirtToISFile, "subtract", isw, "file")
+                )
 
-    # Boom Street Virtual -> Fortune Street Virtual
-    @commands.command(aliases=['bsv2fsv', 'bsvtofsv'])
-    async def ConvertBSVirtualAddressToFSVirtualAddress(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                BSVirtToFSVirt,
-                "subtract",
-                "Fortune Street",
-                "virtual"
-            )
-        )
+    @app_commands.command(
+        name="convert_address_to_other_region",
+        description="Convert a virtual address to another game"
+    )
+    @app_commands.describe(address="The address to convert")
+    @app_commands.choices(
+        source_game=[
+            app_commands.Choice(name=bs, value="boom"),
+            app_commands.Choice(name=fs, value="fortune"),
+            app_commands.Choice(name=isw, value="itadaki"),
+        ]
+    )
+    @app_commands.choices(
+        destination_game=[
+            app_commands.Choice(name=bs, value="boom"),
+            app_commands.Choice(name=fs, value="fortune"),
+            app_commands.Choice(name=isw, value="itadaki"),
+        ]
+    )
+    async def convert_to_other_version(
+        self,
+        interaction: discord.Interaction,
+        address: str,
+        source_game: app_commands.Choice[str],
+        destination_game: app_commands.Choice[str],
+    ):
+        send = interaction.response.send_message
+        if source_game.value == destination_game.value:
+            await send("Please choose different games!")
 
-    # Boom Street Virtual -> Itadaki Street Wii Virtual
-    @commands.command(aliases=['bsv2isv', 'bsvtoisv'])
-    async def ConvertBSVirtualAddressToISVirtualAddress(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                BSVirtToISVirt,
-                "subtract",
-                "Itadaki Street Wii",
-                "virtual"
-            )
-        )
-
-    # Fortune Street Virtual -> Boom Street Virtual
-    @commands.command(aliases=['fsv2bsv', 'fsvtobsv'])
-    async def ConvertFSVirtualAddressToBSVirtualAddress(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                FSVirtToBSVirt,
-                "add",
-                "Boom Street",
-                "virtual"
-            )
-        )
-
-    # Fortune Street Virtual -> Itadaki Street Wii Virtual
-    @commands.command(aliases=['fsv2isv', 'fsvtoisv'])
-    async def ConvertFSVirtualAddressToISVirtualAddress(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                ISVirtToFSVirt,
-                "subtract",
-                "Itadaki Street Wii",
-                "virtual"
-            )
-        )
-
-    # Fortune Street Virtual -> Fortune Street File Offset
-    @commands.command(aliases=['fsv2fsf', 'fsvtofsf'])
-    async def ConvertFSVirtualAddressToFSFileOffset(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                FSVirtToFSFile,
-                "subtract",
-                "Fortune Street",
-                "file"
-            )
-        )
-
-    # Itadaki Street Virtual -> Boom Street Virtual
-    @commands.command(aliases=['isv2bsv', 'isvtobsv'])
-    async def ConvertISVirtualAddressToBSVirtualAddress(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                ISVirtToBSVirt,
-                "add",
-                "Boom Street",
-                "virtual"
-            )
-        )
-
-    # Itadaki Street Virtual -> Fortune Street Virtual
-    @commands.command(aliases=['isv2fsv', 'isvtofsv'])
-    async def ConvertISVirtualAddressToFSVirtualAddress(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                ISVirtToFSVirt,
-                "add",
-                "Fortune Street",
-                "virtual"
-            )
-        )
-    
-    # Itadaki Street Virtual -> Itadaki Street File Offset
-    @commands.command(aliases=['isv2isf', 'isvtoisf'])
-    async def ConvertISVirtualAddressToISFileOffset(self, ctx, arg):
-        await ctx.send(
-            convert_address(
-                arg,
-                ISVirtToISFile,
-                "subtract",
-                "Itadaki Street",
-                "file"
-            )
-        )
+        match source_game.value:
+            case "boom":
+                match destination_game.value:
+                    case "fortune":
+                        await send(
+                            convert(address, BSVirtToFSVirt, "subtract", fs, "virtual")
+                        )
+                    case "itadaki":
+                        await send(
+                            convert(address, BSVirtToISVirt, "subtract", isw, "virtual")
+                        )
+            case "fortune":
+                match destination_game.value:
+                    case "boom":
+                        await send(
+                            convert(address, FSVirtToBSVirt, "add", bs, "virtual")
+                        )
+                    case "itadaki":
+                        await send(
+                            convert(address, FSVirtToISVirt, "subtract", isw, "virtual")
+                        )
+            case "itadaki":
+                match destination_game.value:
+                    case "boom":
+                        await send(
+                            convert(address, ISVirtToBSVirt, "add", bs, "virtual")
+                        )
+                    case "fortune":
+                        await send(
+                            convert(address, ISVirtToFSVirt, "add", fs, "virtual")
+                        )
 
 
-def setup(bot):
-    bot.add_cog(AddressTranslation(bot))
+async def setup(bot):
+    await bot.add_cog(AddressConversion(bot))

@@ -1,3 +1,5 @@
+import discord
+from discord import app_commands
 from discord.ext import commands
 import random
 
@@ -5,28 +7,37 @@ from utils.card_embed import CardEmbed
 
 
 class VentureCards(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(aliases=['card', 'chancecard', 'venture'])
-    async def pull_card(self, ctx, arg=None):
-        if not arg:
-            arg = random.randint(1, 128)
+    @app_commands.command(
+        name="pull_random_card", description="Pull a random venture card"
+    )
+    async def pull_random_card(self, interaction: discord.Interaction):
+        send = interaction.response.send_message
+        num = random.randint(1, 128)
+        card = CardEmbed.create_card_embed(num, interaction.user.mention)
+        await send(file=card.file, embed=card.embed)
+
+    @app_commands.command(name="pull_card", description="Pull a venture card")
+    @app_commands.describe(number="Card number to pull")
+    async def pull_card(self, interaction: discord.Interaction, number: str):
+        send = interaction.response.send_message
         try:
-            num = int(arg)
+            num = int(number)
             assert (
                 type(num) == int and num >= 1 and num <= 128
-            ), await ctx.send(
+            ), await send(
                 "Please enter a valid integer value between 1 and 128."
             )
         except ValueError:
-            await ctx.send(
+            await send(
                 "Please enter a valid integer value between 1 and 128."
             )
 
-        card = CardEmbed.create_card_embed(arg, ctx.author.mention)
-        await ctx.send(file=card.file, embed=card.embed)
+        card = CardEmbed.create_card_embed(number, interaction.user.mention)
+        await send(file=card.file, embed=card.embed)
 
 
-def setup(bot):
-    bot.add_cog(VentureCards(bot))
+async def setup(bot):
+    await bot.add_cog(VentureCards(bot))
