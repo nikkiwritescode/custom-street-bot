@@ -1,9 +1,12 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from textwrap import dedent
+import json
 
-from commands.help.content.links import link_choices
+from data.paths import links_help_path
+
+with open(links_help_path, "r") as read_file_en:
+    link_choices = json.load(read_file_en)
 
 
 class DisplayLinks(commands.Cog):
@@ -27,7 +30,7 @@ class DisplayLinks(commands.Cog):
         send = interaction.response.send_message
         for k, v in link_choices.items():
             if url_to_show.value == k:
-                await send(dedent(v[1]).strip("\n"))
+                await send(v[1])
 
 
 async def setup(bot):
