@@ -1,9 +1,12 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from textwrap import dedent
+import json
 
-from commands.help.content.commands import help_choices
+from data.paths import commands_help_path
+
+with open(commands_help_path, "r") as read_file_en:
+    help_choices = json.load(read_file_en)
 
 
 class LegacyDisplayHelp(commands.Cog):
@@ -28,7 +31,7 @@ class LegacyDisplayHelp(commands.Cog):
             if command.value == k or command.value == "all":
                 embed.add_field(
                     name=v[0],
-                    value=dedent("".join(v[1:]).strip("\n")),
+                    value="".join(v[1:]),
                     inline=False,
                 )
         await interaction.response.send_message(embed=embed)

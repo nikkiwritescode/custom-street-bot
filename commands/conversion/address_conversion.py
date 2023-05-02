@@ -1,10 +1,11 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from utils.address_section_mapper import AddressSectionMapper
 import json
 
-offset_json_path = "commands/conversion/offsets/offsets.json"
+from data.paths import file_offsets_path
+from utils.address_section_mapper import AddressSectionMapper
+
 
 # Address Conversion lists
 
@@ -55,7 +56,7 @@ def initialize_lists():
     global FSVirtToBSVirt, FSVirtToFSFile
     global ISVirtToBSVirt, ISVirtToISFile
 
-    with open(offset_json_path, "r") as read_offset_file:
+    with open(file_offsets_path, "r") as read_offset_file:
         offsets = json.load(read_offset_file)
 
     BSVirtToISVirt = init_list(offsets, "BoomVirtualToItadakiVirtual", False)

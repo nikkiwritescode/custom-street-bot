@@ -22,6 +22,7 @@ async def on_ready():
     await bot.load_extension("commands.conversion.text_translation")
     await bot.load_extension("commands.help.commands")
     await bot.load_extension("commands.help.links")
+    await bot.load_extension("commands.help.rules")
     await bot.load_extension("commands.management.sync")
     await bot.load_extension("commands.venture.fetcher")
 

@@ -1,0 +1,30 @@
+{
+    "invite": [
+        "Custom Street Discord server invite", 
+        "The Custom Street Discord server invite can be found here:\nhttps://discord.gg/DE9Hn7T"
+    ],
+    "twitch": [
+        "Custom Street Twitch channel",
+        "The Custom Street Twitch channel can be found here:\nhttps://www.twitch.tv/customstreet"
+    ],
+    "yt": [
+        "Custom Street YouTube channel",
+        "The Custom Street YouTube channel can be found here:\nhttps://www.youtube.com/@customstreetmods"
+    ],
+    "calculator": [
+        "Fortune Street Address Calculator",
+        "The Fortune Street Address Calculator can be found here:\nhttps://fortunestreetmodding.github.io/calculator"
+    ],
+    "github": [
+        "Fortune Street Modding Github Organization",
+        "The Fortune Street Modding Github Organization can be found here:\nhttps://github.com/FortuneStreetModding/"
+    ],
+    "wiki": [
+        "Fortune Street Modding wiki",
+        "The Fortune Street Modding wiki can be found here:\nhttps://github.com/FortuneStreetModding/fortunestreetmodding.github.io/wiki"
+    ],
+    "contribute": [
+        "Orange Dice Bot Github Repository",
+        "This bot is open source!\nYou can find the project on Github, here:\nhttps://github.com/nikkiwritescode/custom-street-bot"
+    ]
+}

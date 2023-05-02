@@ -1,9 +1,9 @@
+import deepl
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 from app import deepl_key
-import deepl
 
 translator = deepl.Translator(deepl_key)
 

@@ -1,9 +1,12 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-from textwrap import dedent
+import json
 
-from commands.help.content.rules import rules
+from data.paths import rules_help_path
+
+with open(rules_help_path, "r") as read_file_en:
+    rules = json.load(read_file_en)
 
 
 class DisplayRules(commands.Cog):
@@ -18,7 +21,7 @@ class DisplayRules(commands.Cog):
         for k, v in rules.items():
             embed.add_field(
                 name=k,
-                value=dedent(v).strip("\n"),
+                value=v[0],
                 inline=False,
             )
         await interaction.response.send_message(embed=embed)
