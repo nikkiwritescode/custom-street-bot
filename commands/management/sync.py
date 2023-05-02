@@ -14,13 +14,13 @@ from discord.ext.commands import Greedy, Context
 # slash commands are what we're needing to sync
 
 
-@commands.has_role("admin")  # only administrators can use these commands
 class SyncBot(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
     @commands.guild_only()
+    @commands.has_role("⚠ Staff")  # only staff can use this command
     async def sync(
         self,
         ctx: Context,
@@ -40,10 +40,11 @@ class SyncBot(commands.Cog):
             else:
                 synced = await ctx.bot.tree.sync()
 
-            await ctx.send(
+            response = (
                 f"Synced {len(synced)} commands ",
                 f"{'globally' if spec is None else 'to the current guild.'}"
             )
+            await ctx.send("".join(response))
             return
 
         ret = 0
