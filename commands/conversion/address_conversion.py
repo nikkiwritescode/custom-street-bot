@@ -154,20 +154,19 @@ class AddressConversion(commands.Cog):
         address: str,
         game: app_commands.Choice[str],
     ):
+        # line shortening maneuvers
+        a = address
+        f = "file"
         send = interaction.response.send_message
+        sub = "subtract"
+
         match game.value:
             case "boom":
-                await send(
-                    convert(address, BSVirtToBSFile, "subtract", bs, "file")
-                )
+                await send(convert(a, BSVirtToBSFile, sub, bs, f))
             case "fortune":
-                await send(
-                    convert(address, FSVirtToFSFile, "subtract", fs, "file")
-                )
+                await send(convert(a, FSVirtToFSFile, sub, fs, f))
             case "itadaki":
-                await send(
-                    convert(address, ISVirtToISFile, "subtract", isw, "file")
-                )
+                await send(convert(a, ISVirtToISFile, sub, isw, f))
 
     @app_commands.command(
         name="convert_address_to_other_region",
@@ -195,7 +194,12 @@ class AddressConversion(commands.Cog):
         source_game: app_commands.Choice[str],
         destination_game: app_commands.Choice[str],
     ):
+        # line shortening maneuvers
+        a = address
         send = interaction.response.send_message
+        sub = "subtract"
+        v = "virtual"
+
         if source_game.value == destination_game.value:
             await send("Please choose different games!")
 
@@ -203,33 +207,21 @@ class AddressConversion(commands.Cog):
             case "boom":
                 match destination_game.value:
                     case "fortune":
-                        await send(
-                            convert(address, BSVirtToFSVirt, "subtract", fs, "virtual")
-                        )
+                        await send(convert(a, BSVirtToFSVirt, sub, fs, v))
                     case "itadaki":
-                        await send(
-                            convert(address, BSVirtToISVirt, "subtract", isw, "virtual")
-                        )
+                        await send(convert(a, BSVirtToISVirt, sub, isw, v))
             case "fortune":
                 match destination_game.value:
                     case "boom":
-                        await send(
-                            convert(address, FSVirtToBSVirt, "add", bs, "virtual")
-                        )
+                        await send(convert(a, FSVirtToBSVirt, "add", bs, v))
                     case "itadaki":
-                        await send(
-                            convert(address, FSVirtToISVirt, "subtract", isw, "virtual")
-                        )
+                        await send(convert(a, FSVirtToISVirt, sub, isw, v))
             case "itadaki":
                 match destination_game.value:
                     case "boom":
-                        await send(
-                            convert(address, ISVirtToBSVirt, "add", bs, "virtual")
-                        )
+                        await send(convert(a, ISVirtToBSVirt, "add", bs, v))
                     case "fortune":
-                        await send(
-                            convert(address, ISVirtToFSVirt, "add", fs, "virtual")
-                        )
+                        await send(convert(a, ISVirtToFSVirt, "add", fs, v))
 
 
 async def setup(bot):
