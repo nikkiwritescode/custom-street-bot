@@ -1,7 +1,7 @@
 # Discord Bot for Custom Street
 [![CircleCI](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main.svg?style=shield)](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main)
 ## Table of Contents
-* [Functions](#functions)
+* [Features](#features)
 * [Supported Commands](#supported-commands)
   * [Address Conversion](#address-conversion)
   * [Value Conversion](#value-conversion)
@@ -13,51 +13,36 @@
   * [Required Environment Variables](#required-environment-variables)
 * [Contributing](#contributing)
 
-## Functions
-* Conversion of addresses between Boom Street and Fortune Street
-* Conversion of values between hexadecimal and float or int, and vice versa
-* Translation of text to English or Japanese (via DeepL)
+## Features
+* Conversion of addresses between Boom Street, Fortune Street, and Itadaki Street Wii
+* Conversion of values between hexadecimal, float and int
+* Translation of text between all Boom/Fortune/Itadaki Street Wii-supported languages (via DeepL)
 * Posting of Rules and links to Custom Street accounts (Address Calculator, Discord, GitHub, YouTube, Twitch, and Wiki)
 * Posting Venture Card embeds with English and Japanese text
+* All commands are slash commands, with help for each command shown inside Discord itself
 
 ## Supported Commands
 ### Address Conversion
-* `bsv2fsv` - Converts a Boom Street Virtual Address to Fortune Street.
-* `bsv2isv` - Converts a Boom Street Virtual Address to Itadaki Street Wii.
-* `fsv2bsv` - Converts a Fortune Street Virtual Address to Boom Street.
-* `fsv2isv` - Converts a Fortune Street Virtual Address to Itadaki Street Wii.
-* `isv2bsv` - Converts an Itadaki Street Wii Virtual Address to Boom Street.
-* `isv2fsv` - Converts an Itadaki Street Wii Virtual Address to Fortune Street.
-* `bsv2bsf` - Converts a Boom Street Virtual Address to Boom Street File Offset.
-* `fsv2fsf` - Converts a Fortune Street Virtual Address to Fortune Street File Offset.
-* `isv2isf` - Converts an Itadaki Street Virtual Address to Itadaki Street File Offset.
+* `/convert_address_to_file_offset`
+* `/convert_address_to_other_region`
 
 ### Value Conversion
-* `hex2int` - Converts a hexadecimal value to a decimal, or integer, value
-* `hex2float` - Converts a hexadecimal value to a floating-point value
-* `int2hex` - Converts a decimal, or integer, value to hexadecimal
-* `float2hex` - Converts a floating-point value to hexadecimal.
+* `/convert_value_to_float`
+* `/convert_value_to_hex`
+* `/convert_value_to_int`
 
 ### Text Translation (Powered by DeepL)
-* `en` - Translates text of any language to English.
-* `jp` - Translates text of any language to Japanese.
+* `/translate`
 
 ### Venture Cards
-* `card` - Displays a random Venture Card from Fortune Street Wii with both English and Japanese text.
-* `card <number>` - Displays a specific Venture Card from Fortune Street Wii with both English and Japanese text. Accepts numbers 1 through 128.
+* `/pull_card`
+* `/pull_random_card`
 
 ### URLs
-* `calc` - Displays the Address Calculator URL.
-* `contribute` - Displays a link to this GitHub repo.
-* `github` - Displays the Fortune Street Modding GitHub Organization URL.
-* `invite` - Displays the Custom Street Discord Invite URL.
-* `twitch` - Displays the Custom Street Twitch Account URL.
-* `wiki` - Displays the Fortune Street Modding Wiki URL.
-* `youtube` - Displays the Custom Street YouTube Account URL.
+* `/links`
 
 ### Help
-* `aliases` - Displays alternate triggers for bot commands.
-* `help` - Displays help panel.
+* `/help`
 
 ## Running this Bot in Another Environment
 Currently, it is not simple to run this bot elsewhere. This is because I use my own private Terraform modules to power the infrastructure behind it in AWS. Therefore, if you do decide to attempt to do so, you will be on your own when it comes to hosting it. However, the Dockerfile should build just about anywhere, so the knowledge you will need to run it largely pertains to running containerized applications in Docker. You will also need the following external accounts or services:
