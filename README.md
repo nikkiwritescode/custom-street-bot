@@ -2,12 +2,6 @@
 [![CircleCI](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main.svg?style=shield)](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main)
 ## Table of Contents
 * [Features](#features)
-* [Supported Commands](#supported-commands)
-  * [Address Conversion](#address-conversion)
-  * [Value Conversion](#value-conversion)
-  * [Text Translation (Powered by DeepL)](#text-translation-powered-by-deepl)
-  * [Venture Cards](#venture-cards)
-  * [URLs](#urls)
 * [Running this Bot in Another Environment](#running-this-bot-in-another-environment)
   * [Required Accounts](#required-accounts)
   * [Required Environment Variables](#required-environment-variables)
@@ -20,29 +14,6 @@
 * Posting of Rules and links to Custom Street accounts (Address Calculator, Discord, GitHub, YouTube, Twitch, and Wiki)
 * Posting Venture Card embeds with English and Japanese text
 * All commands are slash commands, with help for each command shown inside Discord itself
-
-## Supported Commands
-### Address Conversion
-* `/convert_address_to_file_offset`
-* `/convert_address_to_other_region`
-
-### Value Conversion
-* `/convert_value_to_float`
-* `/convert_value_to_hex`
-* `/convert_value_to_int`
-
-### Text Translation (Powered by DeepL)
-* `/translate`
-
-### Venture Cards
-* `/pull_card`
-* `/pull_random_card`
-
-### URLs
-* `/links`
-
-### Help
-* `/help`
 
 ## Running this Bot in Another Environment
 Currently, it is not simple to run this bot elsewhere. This is because I use my own private Terraform modules to power the infrastructure behind it in AWS. Therefore, if you do decide to attempt to do so, you will be on your own when it comes to hosting it. However, the Dockerfile should build just about anywhere, so the knowledge you will need to run it largely pertains to running containerized applications in Docker. You will also need the following external accounts or services:
