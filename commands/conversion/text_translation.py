@@ -3,7 +3,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from app import deepl_key
+from config.secrets import deepl_key
 
 translator = deepl.Translator(deepl_key)
 

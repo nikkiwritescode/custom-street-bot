@@ -1,10 +1,7 @@
 import discord
 from discord.ext import commands
-import os
 
-# Environment Variables
-deepl_key = os.environ.get("DEEPL_AUTH_KEY")
-discord_token = os.environ.get("DISCORD_TOKEN")
+from config.secrets import discord_token
 
 # Bot Setup
 intents = discord.Intents.default()
@@ -26,4 +23,6 @@ async def on_ready():
     await bot.load_extension("commands.management.sync")
     await bot.load_extension("commands.venture.fetcher")
 
-bot.run(discord_token)
+
+if __name__ == "__main__":
+    bot.run(discord_token)

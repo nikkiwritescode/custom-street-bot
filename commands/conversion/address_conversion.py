@@ -9,9 +9,9 @@ from utils.address_section_mapper import AddressSectionMapper
 
 # Address Conversion lists
 
-BSVirtToISVirt = BSVirtToFSVirt = BSVirtToBSFile = []
-FSVirtToBSVirt = FSVirtToISVirt = FSVirtToFSFile = []
-ISVirtToBSVirt = ISVirtToFSVirt = ISVirtToISFile = []
+bsv_to_isv = bsv_to_fsv = bsv_to_bsf = []
+fsv_to_bsv = fsv_to_isv = fsv_to_fsf = []
+isv_to_bsv = isv_to_fsv = isv_to_isf = []
 
 # Game Names
 
@@ -52,22 +52,22 @@ def init_list(offset_dict: dict, dict_name: str, reverse: bool):
 
 
 def initialize_lists():
-    global BSVirtToISVirt, BSVirtToFSVirt, BSVirtToBSFile
-    global FSVirtToBSVirt, FSVirtToFSFile
-    global ISVirtToBSVirt, ISVirtToISFile
+    global bsv_to_isv, bsv_to_fsv, bsv_to_bsf
+    global fsv_to_bsv, fsv_to_isv, fsv_to_fsf
+    global isv_to_bsv, isv_to_fsv, isv_to_isf
 
     with open(file_offsets_path, "r") as read_offset_file:
         offsets = json.load(read_offset_file)
 
-    BSVirtToISVirt = init_list(offsets, "BoomVirtualToItadakiVirtual", False)
-    BSVirtToFSVirt = init_list(offsets, "BoomVirtualToFortuneVirtual", False)
-    BSVirtToBSFile = init_list(offsets, "BoomVirtualToBoomFile", False)
+    bsv_to_isv = init_list(offsets, "BoomVirtualToItadakiVirtual", False)
+    bsv_to_fsv = init_list(offsets, "BoomVirtualToFortuneVirtual", False)
+    bsv_to_bsf = init_list(offsets, "BoomVirtualToBoomFile", False)
 
-    FSVirtToBSVirt = init_list(offsets, "BoomVirtualToFortuneVirtual", True)
-    FSVirtToFSFile = init_list(offsets, "FortuneVirtualToFortuneFile", False)
+    fsv_to_bsv = init_list(offsets, "BoomVirtualToFortuneVirtual", True)
+    fsv_to_fsf = init_list(offsets, "FortuneVirtualToFortuneFile", False)
 
-    ISVirtToBSVirt = init_list(offsets, "BoomVirtualToItadakiVirtual", True)
-    ISVirtToISFile = init_list(offsets, "ItadakiVirtualToItadakiFile", False)
+    isv_to_bsv = init_list(offsets, "BoomVirtualToItadakiVirtual", True)
+    isv_to_isf = init_list(offsets, "ItadakiVirtualToItadakiFile", False)
 
     # Special Cases
     # Itadaki Street Wii to Fortune Street
@@ -78,12 +78,12 @@ def initialize_lists():
     # and get our correct result, since both conversions
     # are in the same direction from Boom Street.
 
-    for i, data in enumerate(ISVirtToBSVirt):
+    for i, data in enumerate(isv_to_bsv):
         begin = data.offsetBegin
         end = data.offsetEnd
-        delta = data.delta - BSVirtToFSVirt[i].delta
+        delta = data.delta - bsv_to_fsv[i].delta
 
-        ISVirtToFSVirt.append(AddressSectionMapper(begin, end, delta))
+        isv_to_fsv.append(AddressSectionMapper(begin, end, delta))
 
     # Fortune Street to Itadaki Street
 
@@ -91,23 +91,23 @@ def initialize_lists():
     # FSVirtToBSVirt instead to ensure all the offsetBegins
     # and offsetEnds line up as they should.
 
-    for i, data in enumerate(FSVirtToBSVirt):
+    for i, data in enumerate(fsv_to_bsv):
         begin = data.offsetBegin
         end = data.offsetEnd
-        delta = BSVirtToISVirt[i].delta - data.delta
+        delta = bsv_to_isv[i].delta - data.delta
 
-        FSVirtToISVirt.append(AddressSectionMapper(begin, end, delta))
+        fsv_to_isv.append(AddressSectionMapper(begin, end, delta))
 
 
 # Address Conversion
 # As above, this function is about performing a single conversion...
 
 
-def convert(input, list_of_offsets, operator, destination_game, type):
+def convert(input, source_game, offset_list, operator, destination_game, type):
     address = int(input, base=16)
     newAddress = 0
-    response = f"You entered: **{address:02X}**\n"
-    for section in list_of_offsets:
+    response = f"You entered {source_game} virtual address **{address:02X}**\n"
+    for section in offset_list:
         if section.offsetBegin <= address and address <= section.offsetEnd:
             if operator == "add":
                 newAddress = address + section.delta
@@ -163,11 +163,11 @@ class AddressConversion(commands.Cog):
 
         match game.value:
             case "boom":
-                await send(convert(a, BSVirtToBSFile, sub, bs, f))
+                await send(convert(a, bs, bsv_to_bsf, sub, bs, f))
             case "fortune":
-                await send(convert(a, FSVirtToFSFile, sub, fs, f))
+                await send(convert(a, fs, fsv_to_fsf, sub, fs, f))
             case "itadaki":
-                await send(convert(a, ISVirtToISFile, sub, isw, f))
+                await send(convert(a, isw, isv_to_isf, sub, isw, f))
 
     @app_commands.command(
         name="convert_address_to_other_region",
@@ -208,21 +208,21 @@ class AddressConversion(commands.Cog):
             case "boom":
                 match destination_game.value:
                     case "fortune":
-                        await send(convert(a, BSVirtToFSVirt, sub, fs, v))
+                        await send(convert(a, bs, bsv_to_fsv, sub, fs, v))
                     case "itadaki":
-                        await send(convert(a, BSVirtToISVirt, sub, isw, v))
+                        await send(convert(a, bs, bsv_to_isv, sub, isw, v))
             case "fortune":
                 match destination_game.value:
                     case "boom":
-                        await send(convert(a, FSVirtToBSVirt, "add", bs, v))
+                        await send(convert(a, fs, fsv_to_bsv, "add", bs, v))
                     case "itadaki":
-                        await send(convert(a, FSVirtToISVirt, sub, isw, v))
+                        await send(convert(a, fs, fsv_to_isv, sub, isw, v))
             case "itadaki":
                 match destination_game.value:
                     case "boom":
-                        await send(convert(a, ISVirtToBSVirt, "add", bs, v))
+                        await send(convert(a, isw, isv_to_bsv, "add", bs, v))
                     case "fortune":
-                        await send(convert(a, ISVirtToFSVirt, "add", fs, v))
+                        await send(convert(a, isw, isv_to_fsv, "add", fs, v))
 
 
 async def setup(bot):
