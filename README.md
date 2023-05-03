@@ -2,6 +2,11 @@
 [![CircleCI](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main.svg?style=shield)](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main)
 ## Table of Contents
 * [Features](#features)
+* [Supported Commands](#supported-commands)
+  * [Address Conversion](#address-conversion)
+  * [Text Translation](#text-translation)
+  * [Value Conversion](#value-conversion)
+  * [Venture Cards](#venture-cards)
 * [Running this Bot in Another Environment](#running-this-bot-in-another-environment)
   * [Required Accounts](#required-accounts)
   * [Required Environment Variables](#required-environment-variables)
@@ -14,6 +19,31 @@
 * Posting of Rules and links to Custom Street accounts (Address Calculator, Discord, GitHub, YouTube, Twitch, and Wiki)
 * Posting Venture Card embeds with English and Japanese text
 * All commands are slash commands, with help for each command shown inside Discord itself
+
+## Supported Commands
+### Address Conversion
+These commands convert Boom/Fortune/Itadaki Street Wii virtual addresses, either to File Offsets (for use in hex-editing), or to work with a different version of the game. (For example, converting a Boom Street address to Fortune Street and back.)
+
+* `/convert_address_to_file_offset`
+* `/convert_address_to_other_region`
+
+### Text Translation
+This command uses the DeepL service to translate text between languages. All Boom/Fortune/Itadaki Street Wii languages are supported. Source language is automatically detected, but destination language must be specified.
+
+* `/translate`
+
+### Value Conversion
+These commands convert values to different formats. The supported formats are hexadecimal, integer, and float, and each command can auto-detect input values of the other two types. (For example, `/convert_to_hex` can detect values of both integer and floating-point types.)
+
+* `/convert_value_to_float`
+* `/convert_value_to_hex`
+* `/convert_value_to_int`
+
+### Venture Cards
+These commands allow pulling venture cards from Boom / Fortune / Itadaki Street Wii. The `/pull_card` command accepts a number parameter between 1 and 128 and will pull the card specified. The `/pull_random_card` command does not accept a parameter, and will pull a random card instead.
+
+* `/pull_card`
+* `/pull_random_card`
 
 ## Running this Bot in Another Environment
 Currently, it is not simple to run this bot elsewhere. This is because I use my own private Terraform modules to power the infrastructure behind it in AWS. Therefore, if you do decide to attempt to do so, you will be on your own when it comes to hosting it. However, the Dockerfile should build just about anywhere, so the knowledge you will need to run it largely pertains to running containerized applications in Docker. You will also need the following external accounts or services:
