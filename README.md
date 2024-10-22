@@ -1,5 +1,5 @@
 # Discord Bot for Custom Street
-[![CircleCI](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main.svg?style=shield)](https://circleci.com/gh/nikkiwritescode/custom-street-bot/tree/main)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/nikkiwritescode/custom-street-bot/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/nikkiwritescode/custom-street-bot/tree/main)
 ## Table of Contents
 * [Features](#features)
 * [Supported Commands](#supported-commands)
