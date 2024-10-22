@@ -1,10 +1,10 @@
-import discord
-from discord import app_commands
-from discord.ext import commands
 import os
+import discord
 import shutil
 from cs_board_tools.io import read_zip
 from cs_board_tools.validation import validate_bundle
+from discord import app_commands
+from discord.ext import commands
 
 from config.secrets import gdrive_api_key
 

@@ -44,7 +44,8 @@ module "custom_street_bot" {
       secret_arn  = data.terraform_remote_state.foundation.outputs.bot_secret_arns["bot_secrets"]
       secret_vars = {
         DEEPL_AUTH_KEY = { var_name_in_secret = "DEEPL_AUTH_KEY" },
-        DISCORD_TOKEN  = { var_name_in_secret = "DISCORD_TOKEN" }
+        DISCORD_TOKEN  = { var_name_in_secret = "DISCORD_TOKEN" },
+        GDRIVE_API_KEY = { var_name_in_secret = "GDRIVE_API_KEY" }
       }
     }
   }
