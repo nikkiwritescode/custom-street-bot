@@ -42,7 +42,7 @@ class SyncBot(commands.Cog):
 
             response = (
                 f"Synced {len(synced)} commands ",
-                f"{'globally' if spec is None else 'to the current guild.'}"
+                f"{'globally' if spec is None else 'to the current guild.'}",
             )
             await ctx.send("".join(response))
             return

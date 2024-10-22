@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from config.secrets import discord_token
 
+
 # Bot Setup
 intents = discord.Intents.default()
 intents.members = True
@@ -22,6 +23,7 @@ async def on_ready():
     await bot.load_extension("commands.help.rules")
     await bot.load_extension("commands.management.sync")
     await bot.load_extension("commands.venture.fetcher")
+    await bot.load_extension("commands.validation.map_bundle")
 
 
 if __name__ == "__main__":

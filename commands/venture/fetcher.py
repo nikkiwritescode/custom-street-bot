@@ -25,15 +25,11 @@ class VentureCards(commands.Cog):
         send = interaction.response.send_message
         try:
             num = int(number)
-            assert (
-                type(num) == int and num >= 1 and num <= 128
-            ), await send(
+            assert type(num) is int and num >= 1 and num <= 128, await send(
                 "Please enter a valid integer value between 1 and 128."
             )
         except ValueError:
-            await send(
-                "Please enter a valid integer value between 1 and 128."
-            )
+            await send("Please enter a valid integer value between 1 and 128.")
 
         card = CardEmbed.create_card_embed(number, interaction.user.mention)
         await send(file=card.file, embed=card.embed)

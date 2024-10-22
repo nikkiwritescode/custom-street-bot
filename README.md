@@ -4,6 +4,7 @@
 * [Features](#features)
 * [Supported Commands](#supported-commands)
   * [Address Conversion](#address-conversion)
+  * [Board Validation](#board-validation)
   * [Text Translation](#text-translation)
   * [Value Conversion](#value-conversion)
   * [Venture Cards](#venture-cards)
@@ -16,6 +17,7 @@
 * Conversion of addresses between Boom Street, Fortune Street, and Itadaki Street Wii
 * Conversion of values between hexadecimal, float and int
 * Translation of text between all Boom/Fortune/Itadaki Street Wii-supported languages (via DeepL)
+* Validation of CSMM-compatible board bundles via the `cs-board-tools` library
 * Posting of Rules and links to Custom Street accounts (Address Calculator, Discord, GitHub, YouTube, Twitch, and Wiki)
 * Posting Venture Card embeds with English and Japanese text
 * All commands are slash commands, with help for each command shown inside Discord itself
@@ -26,6 +28,11 @@ These commands convert Boom/Fortune/Itadaki Street Wii virtual addresses, either
 
 * `/convert_address_to_file_offset`
 * `/convert_address_to_other_region`
+
+### Board Validation
+This command takes in a CSMM-compatible board bundle (.zip), extracts it, and tests its components to ensure they are valid. It utilizes the [cs-board-tools](https://github.com/FortuneStreetModding/cs-board-tools) library for its functionality.
+
+* `/validate_board_bundle`
 
 ### Text Translation
 This command uses the DeepL service to translate text between languages. All Boom/Fortune/Itadaki Street Wii languages are supported. Source language is automatically detected, but destination language must be specified.
@@ -55,6 +62,7 @@ Currently, it is not simple to run this bot elsewhere. This is because I use my 
 ### Required Environment Variables
 * `DISCORD_TOKEN` -- The token used by the bot to interact with Discord
 * `DEEPL_AUTH_KEY` -- The token used to interact with the DeepL service
+* `GDRIVE_API_KEY` -- (Optional). Used with `cs-board-tools` to download music from Google Drive when running Fortune Street board validation tests.
 
 ## Contributing
 Do you have ideas for bug fixes or new features? Fantastic! If you'd like to contribute to this bot, feel free to clone the repo and perform your work locally, then open a Pull Request with your changes! I will be more than glad to review your work, request changes, and even merge it in if your new functionality works well.

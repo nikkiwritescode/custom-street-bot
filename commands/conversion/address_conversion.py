@@ -171,7 +171,7 @@ class AddressConversion(commands.Cog):
 
     @app_commands.command(
         name="convert_address_to_other_region",
-        description="Convert a virtual address to another game"
+        description="Convert a virtual address to another game",
     )
     @app_commands.describe(address="The address to convert")
     @app_commands.choices(

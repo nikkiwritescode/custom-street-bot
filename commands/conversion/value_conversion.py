@@ -31,7 +31,7 @@ class ValueConversion(commands.Cog):
         if "." in value:  # if float
             error_msg = response + "ERROR converting float to hex"
             num = float(value)
-            assert type(num) == float, await send(error_msg)
+            assert type(num) is float, await send(error_msg)
             try:
                 await send(hex(struct.unpack("<I", struct.pack("<f", num))[0]))
             except ValueError:
@@ -39,7 +39,7 @@ class ValueConversion(commands.Cog):
         else:  # if int
             error_msg = response + "ERROR converting int to hex"
             num = int(value)
-            assert type(num) == int, await send(error_msg)
+            assert type(num) is int, await send(error_msg)
             try:
                 await send(hex(num))
             except ValueError:
@@ -68,7 +68,7 @@ class ValueConversion(commands.Cog):
         else:  # if float
             error_msg = response + "ERROR converting float to int"
             num = float(value)
-            assert type(num) == float, await send(error_msg)
+            assert type(num) is float, await send(error_msg)
             try:
                 await send(round(num))
             except ValueError:
