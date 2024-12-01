@@ -76,6 +76,8 @@ class ValidateBundle(commands.Cog):
             os.mkdir(base_path)
         await attachment.save(file_path)
 
+        interaction.response.defer()
+
         bundles = read_zip(file_path)
         # remove the file now that we've extracted and examined it
         if os.path.exists(file_path):
@@ -162,7 +164,7 @@ class ValidateBundle(commands.Cog):
         if we_created_dir:
             remove_temp_directory(base_path)
 
-        await interaction.response.send_message(embeds=embeds)
+        await interaction.followup.send(embeds=embeds)
 
 
 async def setup(bot):
