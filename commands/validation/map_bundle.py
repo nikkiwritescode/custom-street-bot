@@ -76,7 +76,7 @@ class ValidateBundle(commands.Cog):
             os.mkdir(base_path)
         await attachment.save(file_path)
 
-        interaction.response.defer()
+        await interaction.response.defer()
 
         bundles = read_zip(file_path)
         # remove the file now that we've extracted and examined it
